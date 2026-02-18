@@ -93,15 +93,21 @@ The **Settings** panel offers deep control:
 
 ---
 
-## 🏗️ Technical Architecture
+## 🏗️ Technical Architecture & Versioning
 
-- **GUI Framework:** `PyQt6` (Hardware accelerated).
-- **Vision Model:** `Gemini 1.5 Flash` (API-based, pinned for stability).
-- **Audio Processing:** `OpenAI Whisper` (Local).
-- **Voice Synthesis:** `Kokoro-ONNX` (Local).
-- **Deployment:** `PyInstaller` for standalone executables.
+- **Core:** `PyQt6` (GUI), `src.core.model_registry` (Model Management).
+- **AI:** `Gemini 1.5/2.5`, `GPT-4o/5.2`, `Claude 3.5/Opus`.
+- **Audio:** `Whisper` (STT), `Kokoro` (TTS).
+- **Security:** OS-native Keyring for API keys.
+- **Versioning:** Semantic Versioning (v0.0.1). Check `src/version.py`.
 
----
+### 🧪 Testing
+
+SassyCam includes a comprehensive test suite.
+To run tests:
+```bash
+python -m unittest discover tests
+```
 
 ## 📜 License & Disclaimer
 

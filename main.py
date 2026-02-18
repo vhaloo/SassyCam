@@ -1,24 +1,18 @@
 import sys
-import os
-
-# WORKAROUND: Import torch before PyQt6 to avoid WinError 1114
-try:
-    import torch
-    import whisper
-except ImportError:
-    pass
-
-# Ensure we can import from src
-sys.path.append(os.path.join(os.path.dirname(__file__)))
-
 from PyQt6.QtWidgets import QApplication
 from src.ui.main_window import MainWindow
 from src.core.resource_manager import ResourceManager
+from src.version import __version__
 
 def main():
-    # 1. Hardening: Ensure FFmpeg is available
-    ResourceManager.ensure_ffmpeg()
-
+    print(f"Starting SassyCam v{__version__}")
+    
+    # 1. Ensure Dependencies (FFmpeg)
+    ffmpeg_path = ResourceManager.ensure_ffmpeg()
+    if not ffmpeg_path:
+        print("Critical Error: FFmpeg not found or failed to download.")
+        sys.exit(1)
+        
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

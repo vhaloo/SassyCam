@@ -14,6 +14,7 @@ from src.core.ai_manager import AIManager
 from src.core.ros_manager import ROSManager
 from src.config import ConfigManager
 from src.core.auth_manager import AuthManager
+from src.core.model_registry import ModelRegistry
 from src.ui.login_dialog import LoginDialog
 from src.ui.styles import STYLESHEET
 
@@ -31,7 +32,7 @@ class SettingsDialog(QDialog):
         
         # Provider Selection
         self.provider_combo = QComboBox()
-        self.provider_combo.addItems(["Gemini", "OpenAI", "Claude"])
+        self.provider_combo.addItems(ModelRegistry.PROVIDERS)
         self.provider_combo.setCurrentText(self.config_manager.get("provider", "Gemini"))
         self.provider_combo.currentTextChanged.connect(self.update_key_placeholder)
         self.layout.addRow("AI Provider:", self.provider_combo)
@@ -146,18 +147,18 @@ class SettingsDialog(QDialog):
 
     def update_model_list(self, provider):
         self.model_combo.clear()
-        if provider == "Gemini":
-            models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.5-flash"]
-            current = self.config_manager.get("gemini_model", "gemini-1.5-flash")
-        elif provider == "OpenAI":
-            models = ["gpt-4o", "gpt-4o-mini", "gpt-5.2"]
-            current = self.config_manager.get("openai_model", "gpt-4o")
-        else: # Claude
-            models = ["claude-3-5-sonnet-20241022", "claude-3-opus-20240229", "claude-opus-4.6"]
-            current = self.config_manager.get("claude_model", "claude-3-5-sonnet-20241022")
         
-        self.model_combo.addItems(models)
-        self.model_combo.setCurrentText(current)
+        models = ModelRegistry.get_models_for_provider(provider)
+        for model in models:
+            self.model_combo.addItem(model.name, model.id)
+            
+        current = self.config_manager.get(f"{provider.lower()}_model")
+        # Find index for ID
+        idx = self.model_combo.findData(current)
+        if idx >= 0:
+            self.model_combo.setCurrentIndex(idx)
+        else:
+            self.model_combo.setCurrentText(current)
 
     def on_camera_changed(self, index):
         new_index = self.camera_index_combo.currentData()
@@ -169,15 +170,12 @@ class SettingsDialog(QDialog):
     def save_settings(self):
         # Save Provider Config
         provider = self.provider_combo.currentText()
-        model = self.model_combo.currentText()
+        model_id = self.model_combo.currentData()
+        if not model_id: # Custom text entered
+            model_id = self.model_combo.currentText()
         
         self.config_manager.set("provider", provider)
-        if provider == "Gemini":
-            self.config_manager.set("gemini_model", model)
-        elif provider == "OpenAI":
-            self.config_manager.set("openai_model", model)
-        else: # Claude
-            self.config_manager.set("claude_model", model)
+        self.config_manager.set(f"{provider.lower()}_model", model_id)
         
         # Save Key securely if entered
         new_key = self.api_key_input.text()
@@ -186,17 +184,6 @@ class SettingsDialog(QDialog):
         
         # Refresh AI manager immediately
         self.main_window.ai.load_provider()
-
-        self.config_manager.set("audio_input_device", self.audio_input_combo.currentData())
-        self.config_manager.set("audio_output_device", self.audio_output_combo.currentData())
-        self.config_manager.set("whisper_model", self.whisper_combo.currentText())
-        self.config_manager.set("language", self.lang_combo.currentText())
-        self.config_manager.set("voice_code", self.voice_combo.currentText())
-        self.config_manager.set("auto_sass_interval", self.interval_slider.value())
-        self.config_manager.set("mic_threshold", self.mic_slider.value() / 1000.0)
-        self.config_manager.set("ros_enabled", self.ros_enabled_cb.isChecked())
-        self.config_manager.set("ros_roast_topic", self.ros_topic_input.text())
-        self.accept()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -353,7 +340,7 @@ class MainWindow(QMainWindow):
     def open_settings(self):
         dialog = SettingsDialog(self, self)
         if dialog.exec():
-            self.ai.set_api_key(self.config.get("api_key"))
+            # Apply settings
             self.audio.energy_threshold = self.config.get("mic_threshold")
             self.audio.update_settings(
                 model_size=self.config.get("whisper_model"),

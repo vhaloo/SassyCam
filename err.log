@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\Vhaloo\SassyCam\src\ui\main_window.py", line 356, in open_settings
+    self.ai.set_api_key(self.config.get("api_key"))
+    ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AIManager' object has no attribute 'set_api_key'
