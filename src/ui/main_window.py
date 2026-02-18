@@ -3,7 +3,7 @@ import threading
 import time
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QSlider, QTextEdit, 
-                             QDialog, QLineEdit, QFormLayout, QComboBox)
+                             QDialog, QLineEdit, QFormLayout, QComboBox, QCheckBox)
 from PyQt6.QtGui import QPixmap, QImage, QIcon
 from PyQt6.QtCore import Qt, QTimer, pyqtSlot
 
@@ -11,6 +11,7 @@ from src.core.camera_manager import CameraManager
 from src.core.audio_manager import AudioManager
 from src.core.tts_manager import TTSManager
 from src.core.ai_manager import AIManager
+from src.core.ros_manager import ROSManager
 from src.config import ConfigManager
 from src.ui.styles import STYLESHEET
 
@@ -92,6 +93,14 @@ class SettingsDialog(QDialog):
         interval_layout.addWidget(self.interval_slider)
         interval_layout.addWidget(self.interval_label)
         self.layout.addRow("Auto-Sass Interval:", interval_layout)
+
+        # ROS 2 Integration
+        self.ros_enabled_cb = QCheckBox("Enable ROS 2 Bridge")
+        self.ros_enabled_cb.setChecked(self.config_manager.get("ros_enabled"))
+        self.layout.addRow("ROS 2:", self.ros_enabled_cb)
+
+        self.ros_topic_input = QLineEdit(self.config_manager.get("ros_roast_topic"))
+        self.layout.addRow("ROS Roast Topic:", self.ros_topic_input)
         
         self.save_btn = QPushButton("Save")
         self.save_btn.clicked.connect(self.save_settings)
@@ -114,6 +123,8 @@ class SettingsDialog(QDialog):
         self.config_manager.set("voice_code", self.voice_combo.currentText())
         self.config_manager.set("auto_sass_interval", self.interval_slider.value())
         self.config_manager.set("mic_threshold", self.mic_slider.value() / 1000.0)
+        self.config_manager.set("ros_enabled", self.ros_enabled_cb.isChecked())
+        self.config_manager.set("ros_roast_topic", self.ros_topic_input.text())
         self.accept()
 
 class MainWindow(QMainWindow):
@@ -139,6 +150,12 @@ class MainWindow(QMainWindow):
             status_callback=self.on_tts_status_change
         )
         self.ai = AIManager(self.config.get("api_key"))
+        self.ros = ROSManager(
+            node_name=self.config.get("ros_node_name"),
+            topic=self.config.get("ros_roast_topic")
+        )
+        if self.config.get("ros_enabled"):
+            self.ros.start()
         
         self.is_processing_sass = False
         self.start_systems()
@@ -258,6 +275,16 @@ class MainWindow(QMainWindow):
                 input_device=self.config.get("audio_input_device")
             )
             self.tts.set_output_device(self.config.get("audio_output_device"))
+            
+            # ROS Update
+            if self.config.get("ros_enabled"):
+                if not self.ros.enabled:
+                    self.ros.topic_name = self.config.get("ros_roast_topic")
+                    self.ros.start()
+            else:
+                if self.ros.enabled:
+                    self.ros.stop()
+            
             self.log("Settings updated.")
 
     def log(self, text):
@@ -320,6 +347,7 @@ class MainWindow(QMainWindow):
             sass_level = self.config.get("sass_level")
             response = self.ai.generate_sass(image_bytes, user_text, sass_level)
             self.log(f"SassyCam: {response}")
+            self.ros.publish_roast(response) # ROS Integration
             self.tts.speak(response, self.config.get("voice_code"))
         except Exception as e:
             self.log(f"Error: {e}")
@@ -330,6 +358,7 @@ class MainWindow(QMainWindow):
         self.camera.stop()
         self.audio.stop_listening()
         self.tts.stop()
+        self.ros.stop()
         event.accept()
 
 if __name__ == "__main__":

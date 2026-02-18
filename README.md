@@ -28,6 +28,11 @@ Fully adjustable intensity levels:
 - **Ruthless:** No filter.
 - **Soul-Crushing:** You might actually clean your room after this.
 
+### 🤖 Robot Integration (ROS 2)
+SassyCam is now **ROS 2 compatible**. You can enable the **ROS 2 Bridge** in Settings to turn your robot into a judgmental sidekick.
+- **Publisher:** Publishes the AI roasts as `std_msgs/String` to a configurable topic (default: `/sassy_cam/roast`).
+- **Use Case:** Perfect for integration with a robot's speech synthesis or facial expression system.
+
 ---
 
 ## 🚀 Getting Started
@@ -48,7 +53,15 @@ Fully adjustable intensity levels:
 
 **1. Prerequisites**
 - **Python 3.9+**
-- **FFmpeg:** (SassyCam will attempt to download this automatically on Windows if missing, but it's better to have it in your PATH).
+4. **Hardware:** A working Webcam and Microphone.
+
+### 🤖 For Robots (Optional)
+If you wish to use the **ROS 2 Bridge**:
+- Ensure you have a working **ROS 2** installation (Humble, Iron, or Jazzy recommended).
+- Install `rclpy` in your Python environment.
+- Enable the bridge in SassyCam **Settings**.
+
+---
 
 **2. Installation**
 ```bash

@@ -13,7 +13,10 @@ DEFAULT_CONFIG = {
     "audio_output_device": None,
     "whisper_model": "tiny",
     "auto_sass_interval": 45,
-    "mic_threshold": 0.005
+    "mic_threshold": 0.005,
+    "ros_enabled": False,
+    "ros_node_name": "sassy_cam_node",
+    "ros_roast_topic": "/sassy_cam/roast"
 }
 
 class ConfigManager:
