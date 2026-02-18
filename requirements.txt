@@ -1,0 +1,12 @@
+PyQt6
+opencv-python
+google-generativeai
+faster-whisper
+sounddevice
+numpy
+kokoro-onnx
+soundfile
+pyperclip
+mouse
+keyboard
+Pillow

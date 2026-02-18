@@ -1,0 +1,76 @@
+Loading OpenAI Whisper model (tiny)...
+Loading Kokoro model...
+Opening camera 0...
+input overflow
+Kokoro model loaded successfully.
+input overflow
+OpenAI Whisper model loaded.
+Starting capture loop on camera 0...Camera thread started.
+
+Generating speech for: Did your hair achieve sentience mid-tumble? And that blank, upward stare? Priceless. At least your old light switches are still functioning beautifully.
+Hearing something... (Energy: 0.0159)
+Generating speech for: That pose says "I've given up." Your hair is on a solo adventure. But those distinctively aged wall fixtures certainly add character to the room.
+Silence detected, transcribing...
+User said: 1, 2, 3, 1, 3. Est-ce que tu veux en temps ?
+Generating speech for: That contemplative pose and wild hair suggest you're questioning all your life choices. Mostly the one about brushing. But hey, your door looks sturdy!
+Hearing something... (Energy: 0.1279)
+Hearing something... (Energy: 0.0650)
+Silence detected, transcribing...
+User said: Bon, normalement quand tu fous de ma gala, minor dé
+Generating speech for: Your hair has achieved maximum static cling, and your upward stare is truly... searching. For a hairbrush, maybe? At least your wall has interesting textures.
+Hearing something... (Energy: 0.0137)
+Silence detected, transcribing...
+User said: Cheers.
+Generating speech for: Your hair looks like it just wrestled a tumbleweed, and that angle screams 'contemplating the meaning of dust bunnies'. But hey, your glasses frames are quite stylish!
+Hearing something... (Energy: 0.0309)
+Generating speech for: Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash
+Please retry in 42.841878783s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 20
+}
+, retry_delay {
+  seconds: 42
+}
+]
+Silence detected, transcribing...
+User said: I'm sorry. Are you fucking with me?
+Hearing something... (Energy: 0.0056)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0056)
+Generating speech for: Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash
+Please retry in 21.847667126s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 20
+}
+, retry_delay {
+  seconds: 21
+}
+]
