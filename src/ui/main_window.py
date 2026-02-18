@@ -36,6 +36,13 @@ class SettingsDialog(QDialog):
         self.provider_combo.currentTextChanged.connect(self.update_key_placeholder)
         self.layout.addRow("AI Provider:", self.provider_combo)
 
+        # Model Selection (Dynamic based on provider)
+        self.model_combo = QComboBox()
+        self.model_combo.setEditable(True)  # Allow custom model names
+        self.update_model_list(self.provider_combo.currentText())
+        self.provider_combo.currentTextChanged.connect(self.update_model_list)
+        self.layout.addRow("Model Version:", self.model_combo)
+
         # Secure API Key Input
         self.api_key_input = QLineEdit()
         self.api_key_input.setEchoMode(QLineEdit.EchoMode.Password)
@@ -137,6 +144,21 @@ class SettingsDialog(QDialog):
         else:
             self.api_key_input.setPlaceholderText(f"Enter API Key for {provider}")
 
+    def update_model_list(self, provider):
+        self.model_combo.clear()
+        if provider == "Gemini":
+            models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.5-flash"]
+            current = self.config_manager.get("gemini_model", "gemini-1.5-flash")
+        elif provider == "OpenAI":
+            models = ["gpt-4o", "gpt-4o-mini", "gpt-5.2"]
+            current = self.config_manager.get("openai_model", "gpt-4o")
+        else: # Claude
+            models = ["claude-3-5-sonnet-20241022", "claude-3-opus-20240229", "claude-opus-4.6"]
+            current = self.config_manager.get("claude_model", "claude-3-5-sonnet-20241022")
+        
+        self.model_combo.addItems(models)
+        self.model_combo.setCurrentText(current)
+
     def on_camera_changed(self, index):
         new_index = self.camera_index_combo.currentData()
         self.config_manager.set("camera_index", new_index)
@@ -147,13 +169,23 @@ class SettingsDialog(QDialog):
     def save_settings(self):
         # Save Provider Config
         provider = self.provider_combo.currentText()
+        model = self.model_combo.currentText()
+        
         self.config_manager.set("provider", provider)
+        if provider == "Gemini":
+            self.config_manager.set("gemini_model", model)
+        elif provider == "OpenAI":
+            self.config_manager.set("openai_model", model)
+        else: # Claude
+            self.config_manager.set("claude_model", model)
         
         # Save Key securely if entered
         new_key = self.api_key_input.text()
         if new_key:
             self.auth.set_api_key(provider, new_key)
-            self.main_window.ai.set_provider(provider) # Refresh AI manager immediately
+        
+        # Refresh AI manager immediately
+        self.main_window.ai.load_provider()
 
         self.config_manager.set("audio_input_device", self.audio_input_combo.currentData())
         self.config_manager.set("audio_output_device", self.audio_output_combo.currentData())
@@ -200,7 +232,7 @@ class MainWindow(QMainWindow):
         )
         
         # AI Manager now takes AuthManager
-        self.ai = AIManager(self.auth)
+        self.ai = AIManager(self.auth, self.config)
         self.ai.set_provider(self.config.get("provider", "Gemini"))
 
         self.ros = ROSManager(

@@ -9,29 +9,35 @@ class AIManager:
     """
     Orchestrates AI interactions using multiple providers.
     """
-    def __init__(self, auth_manager):
+    def __init__(self, auth_manager, config_manager):
         self.auth = auth_manager
-        self.provider = "Gemini"
+        self.config = config_manager
+        self.provider = self.config.get("provider", "Gemini")
         self.current_llm = None
         self.load_provider()
 
     def load_provider(self):
         """Loads the LLM instance based on the current user's settings."""
-        # For now, we default to Gemini if no setting is found, or check config later
+        # Refresh provider setting from config in case it changed
+        self.provider = self.config.get("provider", "Gemini")
         key = self.auth.get_api_key(self.provider)
+        
         if not key:
             self.current_llm = None
             return
 
         if self.provider == "Gemini":
-            self.current_llm = GeminiProvider(key)
+            model = self.config.get("gemini_model", "gemini-1.5-flash")
+            self.current_llm = GeminiProvider(key, model_name=model)
         elif self.provider == "OpenAI":
-            self.current_llm = OpenAIProvider(key)
+            model = self.config.get("openai_model", "gpt-4o")
+            self.current_llm = OpenAIProvider(key, model_name=model)
         elif self.provider == "Claude":
-            self.current_llm = ClaudeProvider(key)
+            model = self.config.get("claude_model", "claude-3-5-sonnet-20241022")
+            self.current_llm = ClaudeProvider(key, model_name=model)
 
     def set_provider(self, provider_name):
-        self.provider = provider_name
+        self.config.set("provider", provider_name)
         self.load_provider()
 
     def generate_sass(self, image_bytes, user_speech_text, sass_level=50, language="English"):
