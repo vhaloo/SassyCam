@@ -5,6 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
 [![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/vhaloo/SassyCam)
 
 SassyCam is a sentient desktop companion that turns your webcam into a judgmental (but affectionate) critic. Using high-end AI vision and local speech processing, it watches you, listens to your excuses, and delivers punchy, context-aware commentary on your life, posture, and room cleanliness.
 
@@ -13,55 +14,49 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 ## ✨ Key Features
 
 ### 👁️ Visual Roasting (Vision AI)
-Powered by **Google Gemini 1.5 Flash**, SassyCam analyzes your webcam feed in real-time. It doesn't just see a face; it sees your unbrushed hair, your messy background laundry, and that "I haven't slept in 48 hours" expression.
+Powered by **Google Gemini 1.5 Flash**, SassyCam analyzes your webcam feed in real-time. It sees your unbrushed hair, your messy background laundry, and your "I haven't slept" expression.
 
 ### 👂 Active Listening (Local STT)
-Integrating **OpenAI Whisper (Tiny/Medium)**, the app listens to your spoken reactions. If you try to argue back, SassyCam incorporates your "pathetic excuses" into its next roast. Processing happens **locally** on your machine for privacy and speed.
+Integrating **OpenAI Whisper (Tiny/Medium)**, the app listens to your spoken reactions. If you try to argue back, SassyCam incorporates your "pathetic excuses" into its next roast. Processing happens **locally** for privacy and speed.
 
 ### 🗣️ Smooth Vocal Delivery (Local TTS)
-No robotic voices here. We use **Kokoro TTS**, a state-of-the-art local text-to-speech engine that delivers roasts with human-like intonation and clarity.
+Uses **Kokoro TTS**, a state-of-the-art local text-to-speech engine that delivers roasts with human-like intonation and clarity.
 
-### 📊 Sass-O-Meter
-Fully adjustable intensity levels:
-- **Mild:** Friendly banter.
-- **Passive-Aggressive:** Your typical office colleague.
-- **Ruthless:** No filter.
-- **Soul-Crushing:** You might actually clean your room after this.
+### 📊 Sass-O-Meter & Boredom Detection
+- **Adjustable Intensity:** From "Mild" banter to "Soul-Crushing" ruthlessness.
+- **Boredom Timer:** If you stay silent for too long, SassyCam gets bored and initiates a roast automatically.
 
-### 🤖 Robot Integration (ROS 2)
-SassyCam is now **ROS 2 compatible**. You can enable the **ROS 2 Bridge** in Settings to turn your robot into a judgmental sidekick.
-- **Publisher:** Publishes the AI roasts as `std_msgs/String` to a configurable topic (default: `/sassy_cam/roast`).
-- **Use Case:** Perfect for integration with a robot's speech synthesis or facial expression system.
+### 🤖 Robot Integration (ROS 2 Bridge)
+SassyCam includes an optional **ROS 2 Bridge**. When enabled, every AI roast is published as a `std_msgs/String` to a configurable topic (default: `/sassy_cam/roast`), allowing your robots to join in on the fun.
 
 ---
 
 ## 🚀 Getting Started
 
-SassyCam is designed to be easy to run on **Windows, macOS, and Linux**.
+SassyCam is fully cross-compatible with **Windows, macOS, and Linux**.
 
 ### 🟢 For Non-Technical Users (Easy Way)
 
 1. **Download:** Grab the latest `SassyCam_Release` for your platform from the [Releases](https://github.com/vhaloo/SassyCam/releases) page.
-2. **Extract:** Unzip the folder.
+2. **Extract:** Unzip the folder to your desktop.
 3. **Run:**
-   - **Windows:** Double-click `Launch_SassyCam.bat` or `SassyCam.exe`.
+   - **Windows:** Double-click `Launch_SassyCam.bat`.
    - **macOS/Linux:** Open a terminal in the folder and run `sh Launch_SassyCam.sh`.
 4. **Setup:**
-   - On the first run, the app will download its "AI Brains" (~400MB).
-   - **FFmpeg:** The app will automatically attempt to download a local copy of FFmpeg if you don't have it installed.
+   - On the first run, the app will download its AI models (~400MB) and a local copy of FFmpeg if missing.
    - Click **Settings** (top-right).
    - Enter your **Gemini API Key**. (See "How to get a Key" below).
-   - Select your Camera and Microphone.
-   - Click **Save**.
+   - Click **Save** and start being judged.
 
 ### 👨‍💻 For Developers (Building from Source)
 
 **1. Prerequisites**
 - **Python 3.9+**
-- **FFmpeg:** (Optional, SassyCam downloads it for you on Windows/Mac/Linux if missing).
-- **Libraries:** (Linux only)
-  - For UI: `sudo apt install libxcb-cursor0`
-  - For Audio: `sudo apt install libportaudio2`
+- **FFmpeg:** (Automatically handled by the app on first run if not found).
+- **System Libraries (Linux Only):**
+  - UI Support: `sudo apt install libxcb-cursor0`
+  - Audio Support: `sudo apt install libportaudio2`
+- **ROS 2 (Optional):** If you wish to use the bridge, ensure `rclpy` is installed.
 
 **2. Installation**
 ```bash
@@ -72,19 +67,18 @@ pip install -r requirements.txt
 
 **3. Run**
 ```bash
-python main.py  # or python3 main.py
+python main.py
 ```
 
-**4. Build Executable**
+**4. Build Standalone Executable**
 - **Windows:** Run `build_release.bat`.
 - **macOS/Linux:** Run `sh build_release.sh`.
-
 
 ---
 
 ## 🔑 Obtaining a Gemini API Key
 
-SassyCam requires a Google Gemini API Key to function. It is currently **free** for individual use.
+SassyCam requires a Google Gemini API Key. It is currently **free** for individual use.
 
 1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey).
 2. Sign in with your Google account.
@@ -95,45 +89,30 @@ SassyCam requires a Google Gemini API Key to function. It is currently **free** 
 
 ## 🛠️ Configuration & Customization
 
-The **Settings** panel offers deep control over the experience:
-- **Camera Index:** Instantly switch between multiple webcams.
-- **Audio Input:** Choose which mic hears your shame.
-- **Audio Output:** Choose which speakers deliver the sass.
-- **Whisper Model:** Choose "tiny" for speed or "medium" for better understanding.
-- **Auto-Sass Interval:** Set how often the AI roasts you while you're idle (10s to 5m).
-- **Mic Sensitivity:** Adjust the threshold to ensure the AI only hears you, not your keyboard.
+The **Settings** panel offers deep control:
+- **Hardware Selection:** Switch Cameras, Microphones, and Speakers instantly.
+- **Whisper Model:** Choose "tiny" for speed or "medium" for accuracy.
+- **Auto-Sass Interval:** Set the boredom timer (10s to 5m).
+- **Mic Sensitivity:** Visual feedback via the "Mic Dot" helps you find the perfect threshold.
+- **ROS 2 Bridge:** Toggle the robot interface and set your custom roast topic.
 
 ---
 
 ## 🏗️ Technical Architecture
 
-- **GUI Framework:** `PyQt6` (Hardware accelerated, high-performance polling).
+- **GUI Framework:** `PyQt6` (Hardware accelerated).
 - **Vision Model:** `Gemini 1.5 Flash` (API-based, pinned for stability).
-- **Audio Processing:** `OpenAI Whisper` (Local ONNX/CPU).
-- **Voice Synthesis:** `Kokoro-ONNX` (Local high-fidelity TTS).
-- **Hardware Access:** `OpenCV` (Camera) and `SoundDevice` (Audio).
-
-### **Gemini Versioning**
-This project explicitly pins **Gemini 1.5 Flash** as the primary vision engine. This version was chosen for its extreme speed and cost-effectiveness. The app performs a version-compatibility check on startup to ensure your API key supports this model.
-
----
-
-## 🤝 Contributing
-
-We love contributors! If you want to make SassyCam even more disrespectful or optimize the local models:
-1. Fork the Project.
-2. Create your Feature Branch (`git checkout -b feature/CoolNewSass`).
-3. Commit your Changes (`git commit -m 'Added extra sarcasm'`).
-4. Push to the Branch (`git push origin feature/CoolNewSass`).
-5. Open a Pull Request.
+- **Audio Processing:** `OpenAI Whisper` (Local).
+- **Voice Synthesis:** `Kokoro-ONNX` (Local).
+- **Deployment:** `PyInstaller` for standalone executables.
 
 ---
 
 ## 📜 License & Disclaimer
 
-**License:** Distributed under the **MIT License**. See `LICENSE` for more information.
+**License:** Distributed under the **MIT License**.
 
-**Disclaimer:** SassyCam is for **entertainment purposes only**. The "sass" generated is random and AI-driven. If you are sensitive to criticism regarding your appearance or environment, please use the "Mild" setting or refrain from use. We are not responsible for any ego damage sustained.
+**Disclaimer:** SassyCam is for **entertainment purposes only**. We are not responsible for any ego damage sustained during use. Use the "Mild" setting if you're having a bad hair day.
 
 ---
 
