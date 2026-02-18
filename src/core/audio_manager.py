@@ -25,6 +25,7 @@ class AudioManager:
         self.is_speaking = False
         self.last_speech_time = 0
         self.latest_energy = 0.0 # For UI feedback
+        self.current_buffer = [] # Buffer for speech segments
         
         threading.Thread(target=self._load_model, daemon=True).start()
         threading.Thread(target=self._process_audio_loop, daemon=True).start()
