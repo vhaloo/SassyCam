@@ -28,6 +28,16 @@ SassyCam now speaks multiple languages! Using **Kokoro TTS**, it delivers roasts
 - 🇨🇳 **Chinese**
 - 🇪🇸 **Spanish**
 
+### 🧠 Multi-Brain Support
+Choose your preferred AI provider in Settings:
+- **Google Gemini** (Default, Fast, Free Tier available)
+- **OpenAI GPT-4o** (Premium, highly detailed vision)
+- **Anthropic Claude 3** (Nuanced and creative roasts)
+
+### 🔐 Secure Authentication & Profiles
+- **Secure Storage:** API Keys are now stored in your OS's native **Keychain/Credential Locker** (not in plain text files).
+- **User Profiles:** Create multiple local profiles (e.g., "Guest", "Admin") to keep settings separate.
+
 ### 📊 Sass-O-Meter & Boredom Detection
 - **Adjustable Intensity:** From "Mild" banter to "Soul-Crushing" ruthlessness.
 - **Boredom Timer:** If you stay silent for too long, SassyCam gets bored and initiates a roast automatically.
@@ -52,14 +62,21 @@ SassyCam is fully cross-compatible with **Windows, macOS, and Linux**.
 
 ---
 
-## 🔑 Obtaining a Gemini API Key
+## 🔑 Obtaining API Keys
 
-SassyCam requires a Google Gemini API Key. It is currently **free** for individual use.
+SassyCam supports multiple "brains". You only need one, but you can switch freely.
 
+### **Google Gemini (Recommended/Free)**
 1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey).
-2. Sign in with your Google account.
-3. Click **"Create API Key"**.
-4. Copy the key and paste it into SassyCam's **Settings** menu.
+2. Create and copy your key.
+
+### **OpenAI (GPT-4o)**
+1. Visit [OpenAI Platform](https://platform.openai.com/api-keys).
+2. Create a new secret key. **Note:** Requires a funded account.
+
+### **Anthropic (Claude 3)**
+1. Visit [Anthropic Console](https://console.anthropic.com/settings/keys).
+2. Generate an API Key.
 
 ---
 

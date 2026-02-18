@@ -1,12 +1,27 @@
+# Core
+requests
 PyQt6
-opencv-python
 google-generativeai
-faster-whisper
-sounddevice
 numpy
-kokoro-onnx
+opencv-python
+pillow
+sounddevice
 soundfile
-pyperclip
-mouse
-keyboard
-Pillow
+onnxruntime
+pyyaml
+scipy
+
+# Audio
+openai-whisper
+
+# Cross-platform
+pyinstaller
+
+# Secure Auth & Multi-Provider
+keyring
+cryptography
+openai
+anthropic
+
+# ROS 2 (Optional)
+# No pip package; handled by system check

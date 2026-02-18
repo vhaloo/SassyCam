@@ -1,52 +1,55 @@
-import google.generativeai as genai
 import PIL.Image
 import io
+import google.generativeai as genai
+
+# Import Providers
+from src.core.providers import GeminiProvider, OpenAIProvider, ClaudeProvider
 
 class AIManager:
-    # Explicitly pin the version. 'gemini-1.5-flash' is the current stable standard.
-    STABLE_MODEL_VERSION = 'gemini-1.5-flash'
+    """
+    Orchestrates AI interactions using multiple providers.
+    """
+    def __init__(self, auth_manager):
+        self.auth = auth_manager
+        self.provider = "Gemini"
+        self.current_llm = None
+        self.load_provider()
 
-    def __init__(self, api_key=None):
-        self.api_key = api_key
-        self.model_name = self.STABLE_MODEL_VERSION
-        if self.api_key:
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel(self.model_name)
-        else:
-            self.model = None
+    def load_provider(self):
+        """Loads the LLM instance based on the current user's settings."""
+        # For now, we default to Gemini if no setting is found, or check config later
+        key = self.auth.get_api_key(self.provider)
+        if not key:
+            self.current_llm = None
+            return
 
-    def set_api_key(self, api_key):
-        self.api_key = api_key
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel(self.model_name)
+        if self.provider == "Gemini":
+            self.current_llm = GeminiProvider(key)
+        elif self.provider == "OpenAI":
+            self.current_llm = OpenAIProvider(key)
+        elif self.provider == "Claude":
+            self.current_llm = ClaudeProvider(key)
 
-    def validate_api(self):
-        """ Checks if the model is actually available with the current key """
-        if not self.model: return False, "No API Key"
-        try:
-            # Simple test generation
-            self.model.generate_content("test")
-            return True, "OK"
-        except Exception as e:
-            return False, str(e)
+    def set_provider(self, provider_name):
+        self.provider = provider_name
+        self.load_provider()
 
     def generate_sass(self, image_bytes, user_speech_text, sass_level=50, language="English"):
-        if not self.model:
-            return "Listen, I can't roast you if you don't give me an API key. Go to Settings, human."
+        if not self.current_llm:
+            self.load_provider()
+            if not self.current_llm:
+                return "I have no brain! Check your API Key in Settings."
 
         try:
             prompt = self._get_system_prompt(sass_level, user_speech_text, language)
             
-            # Convert image bytes to PIL Image
-            image = PIL.Image.open(io.BytesIO(image_bytes))
+            # Delegate to the specific provider implementation
+            # Note: The provider classes handle image conversion/encoding internally
+            response = self.current_llm.generate_roast(image_bytes, user_speech_text, prompt, language)
+            return response
 
-            response = self.model.generate_content([prompt, image])
-            return response.text
         except Exception as e:
-            # Fallback handling
-            if "404" in str(e):
-                return f"API Error: The model {self.model_name} isn't responding. Check your region or key."
-            return f"Error: {e}"
+            return f"AI Error: {e}"
 
     def _get_system_prompt(self, sass_level, user_speech_text, language):
         intensity = "mild"

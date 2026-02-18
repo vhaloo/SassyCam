@@ -13,6 +13,8 @@ from src.core.tts_manager import TTSManager
 from src.core.ai_manager import AIManager
 from src.core.ros_manager import ROSManager
 from src.config import ConfigManager
+from src.core.auth_manager import AuthManager
+from src.ui.login_dialog import LoginDialog
 from src.ui.styles import STYLESHEET
 
 import cv2
@@ -24,12 +26,25 @@ class SettingsDialog(QDialog):
         self.setWindowTitle("SassyCam Settings")
         self.main_window = main_window
         self.config_manager = main_window.config
+        self.auth = main_window.auth
         self.layout = QFormLayout(self)
         
-        # API Key
-        self.api_key_input = QLineEdit(self.config_manager.get("api_key"))
-        self.layout.addRow("Gemini API Key:", self.api_key_input)
+        # Provider Selection
+        self.provider_combo = QComboBox()
+        self.provider_combo.addItems(["Gemini", "OpenAI", "Claude"])
+        self.provider_combo.setCurrentText(self.config_manager.get("provider", "Gemini"))
+        self.provider_combo.currentTextChanged.connect(self.update_key_placeholder)
+        self.layout.addRow("AI Provider:", self.provider_combo)
 
+        # Secure API Key Input
+        self.api_key_input = QLineEdit()
+        self.api_key_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.api_key_input.setPlaceholderText("Stored securely in Keychain")
+        self.layout.addRow("API Key:", self.api_key_input)
+        
+        self.update_key_placeholder(self.provider_combo.currentText())
+
+        # ... (Rest of existing settings: Camera, Audio, etc.) ...
         # Camera Index (Immediate Change)
         self.camera_index_combo = QComboBox()
         for i in range(5):
@@ -114,6 +129,14 @@ class SettingsDialog(QDialog):
         
         self.setStyleSheet(STYLESHEET)
 
+    def update_key_placeholder(self, provider):
+        # Check if we have a key stored
+        existing_key = self.auth.get_api_key(provider)
+        if existing_key:
+            self.api_key_input.setPlaceholderText(f"Key for {provider} stored securely.")
+        else:
+            self.api_key_input.setPlaceholderText(f"Enter API Key for {provider}")
+
     def on_camera_changed(self, index):
         new_index = self.camera_index_combo.currentData()
         self.config_manager.set("camera_index", new_index)
@@ -122,7 +145,16 @@ class SettingsDialog(QDialog):
         threading.Thread(target=self.main_window.camera.start, daemon=True).start()
 
     def save_settings(self):
-        self.config_manager.set("api_key", self.api_key_input.text())
+        # Save Provider Config
+        provider = self.provider_combo.currentText()
+        self.config_manager.set("provider", provider)
+        
+        # Save Key securely if entered
+        new_key = self.api_key_input.text()
+        if new_key:
+            self.auth.set_api_key(provider, new_key)
+            self.main_window.ai.set_provider(provider) # Refresh AI manager immediately
+
         self.config_manager.set("audio_input_device", self.audio_input_combo.currentData())
         self.config_manager.set("audio_output_device", self.audio_output_combo.currentData())
         self.config_manager.set("whisper_model", self.whisper_combo.currentText())
@@ -137,6 +169,16 @@ class SettingsDialog(QDialog):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        
+        # Initialize Auth First
+        self.auth = AuthManager()
+        if not self.auth.login("Guest"): # Try default guest login first
+             pass 
+
+        # If we want a proper login dialog before showing main window:
+        # Note: In PyQt, typically you show login dialog before main window.
+        # We will handle this in main execution block below, or here.
+        
         self.setWindowTitle("SassyCam v0.0.1")
         self.setMinimumSize(800, 600)
         self.setGeometry(100, 100, 1000, 800)
@@ -156,7 +198,11 @@ class MainWindow(QMainWindow):
             output_device=self.config.get("audio_output_device"),
             status_callback=self.on_tts_status_change
         )
-        self.ai = AIManager(self.config.get("api_key"))
+        
+        # AI Manager now takes AuthManager
+        self.ai = AIManager(self.auth)
+        self.ai.set_provider(self.config.get("provider", "Gemini"))
+
         self.ros = ROSManager(
             node_name=self.config.get("ros_node_name"),
             topic=self.config.get("ros_roast_topic")
