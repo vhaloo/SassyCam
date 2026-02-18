@@ -12,7 +12,7 @@ DEFAULT_CONFIG = {
     "audio_input_device": None,
     "audio_output_device": None,
     "provider": "Gemini",
-    "gemini_model": "gemini-1.5-flash",
+    "gemini_model": "gemini-2.0-flash",
     "openai_model": "gpt-4o",
     "claude_model": "claude-3-5-sonnet-20241022",
     "whisper_model": "tiny",

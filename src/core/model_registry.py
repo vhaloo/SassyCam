@@ -17,9 +17,10 @@ class ModelRegistry:
     
     MODELS = {
         "Gemini": [
-            AIModel("gemini-1.5-flash", "Gemini 1.5 Flash (Fast/Stable)", "Gemini", ["vision", "text"]),
-            AIModel("gemini-1.5-pro", "Gemini 1.5 Pro (High Reasoning)", "Gemini", ["vision", "text"]),
-            AIModel("gemini-2.5-flash", "Gemini 2.5 Flash (Experimental)", "Gemini", ["vision", "text"], is_experimental=True),
+            AIModel("gemini-2.0-flash", "Gemini 2.0 Flash (Fast/Stable)", "Gemini", ["vision", "text"]),
+            AIModel("gemini-2.5-flash", "Gemini 2.5 Flash (Latest)", "Gemini", ["vision", "text"]),
+            AIModel("gemini-2.5-pro", "Gemini 2.5 Pro (High Reasoning)", "Gemini", ["vision", "text"]),
+            AIModel("gemini-flash-latest", "Gemini Flash Latest (Auto-Update)", "Gemini", ["vision", "text"]),
         ],
         "OpenAI": [
             AIModel("gpt-4o", "GPT-4o (Omni)", "OpenAI", ["vision", "text"]),
