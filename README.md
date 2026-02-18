@@ -37,13 +37,18 @@ SassyCam is now **ROS 2 compatible**. You can enable the **ROS 2 Bridge** in Set
 
 ## 🚀 Getting Started
 
+SassyCam is designed to be easy to run on **Windows, macOS, and Linux**.
+
 ### 🟢 For Non-Technical Users (Easy Way)
 
-1. **Download:** Grab the latest `SassyCam_Release.zip` from the [Releases](https://github.com/vhaloo/SassyCam/releases) page.
-2. **Extract:** Right-click the zip and select "Extract All".
-3. **Run:** Double-click `Launch_SassyCam.bat` or `SassyCam.exe` inside the folder.
+1. **Download:** Grab the latest `SassyCam_Release` for your platform from the [Releases](https://github.com/vhaloo/SassyCam/releases) page.
+2. **Extract:** Unzip the folder.
+3. **Run:**
+   - **Windows:** Double-click `Launch_SassyCam.bat` or `SassyCam.exe`.
+   - **macOS/Linux:** Open a terminal in the folder and run `sh Launch_SassyCam.sh`.
 4. **Setup:**
    - On the first run, the app will download its "AI Brains" (~400MB).
+   - **FFmpeg:** The app will automatically attempt to download a local copy of FFmpeg if you don't have it installed.
    - Click **Settings** (top-right).
    - Enter your **Gemini API Key**. (See "How to get a Key" below).
    - Select your Camera and Microphone.
@@ -53,15 +58,10 @@ SassyCam is now **ROS 2 compatible**. You can enable the **ROS 2 Bridge** in Set
 
 **1. Prerequisites**
 - **Python 3.9+**
-4. **Hardware:** A working Webcam and Microphone.
-
-### 🤖 For Robots (Optional)
-If you wish to use the **ROS 2 Bridge**:
-- Ensure you have a working **ROS 2** installation (Humble, Iron, or Jazzy recommended).
-- Install `rclpy` in your Python environment.
-- Enable the bridge in SassyCam **Settings**.
-
----
+- **FFmpeg:** (Optional, SassyCam downloads it for you on Windows/Mac/Linux if missing).
+- **Libraries:** (Linux only)
+  - For UI: `sudo apt install libxcb-cursor0`
+  - For Audio: `sudo apt install libportaudio2`
 
 **2. Installation**
 ```bash
@@ -72,13 +72,13 @@ pip install -r requirements.txt
 
 **3. Run**
 ```bash
-python main.py
+python main.py  # or python3 main.py
 ```
 
-**4. Build Executable (Windows)**
-```bash
-build_release.bat
-```
+**4. Build Executable**
+- **Windows:** Run `build_release.bat`.
+- **macOS/Linux:** Run `sh build_release.sh`.
+
 
 ---
 
