@@ -1,4 +1,11 @@
 import sys
+# Import torch/whisper first to prevent WinError 1114 DLL initialization failure
+try:
+    import torch
+    import whisper
+except ImportError:
+    pass # Will be handled by dependencies check later if critical
+
 from PyQt6.QtWidgets import QApplication
 from src.ui.main_window import MainWindow
 from src.core.resource_manager import ResourceManager

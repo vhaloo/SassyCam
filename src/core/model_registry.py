@@ -13,7 +13,7 @@ class ModelRegistry:
     """
     Central registry for available AI providers and their models.
     """
-    PROVIDERS = ["Gemini", "OpenAI", "Claude"]
+    PROVIDERS = ["Gemini", "OpenAI", "Claude", "Pollinations"]
     
     MODELS = {
         "Gemini": [
@@ -30,6 +30,10 @@ class ModelRegistry:
             AIModel("claude-3-5-sonnet-20241022", "Claude 3.5 Sonnet", "Claude", ["vision", "text"]),
             AIModel("claude-3-opus-20240229", "Claude 3 Opus", "Claude", ["vision", "text"]),
             AIModel("claude-opus-4.6", "Claude Opus 4.6 (Experimental)", "Claude", ["vision", "text"], is_experimental=True),
+        ],
+        "Pollinations": [
+            AIModel("openai", "Free Tier (Blind/Text Only)", "Pollinations", ["text"]),
+            AIModel("search", "Free Tier (Web Search)", "Pollinations", ["text"]),
         ]
     }
 

@@ -3,7 +3,7 @@ import io
 import google.generativeai as genai
 
 # Import Providers
-from src.core.providers import GeminiProvider, OpenAIProvider, ClaudeProvider
+from src.core.providers import GeminiProvider, OpenAIProvider, ClaudeProvider, PollinationsProvider
 
 class AIManager:
     """
@@ -22,7 +22,8 @@ class AIManager:
         self.provider = self.config.get("provider", "Gemini")
         key = self.auth.get_api_key(self.provider)
         
-        if not key:
+        # Pollinations is the only provider that works without a key
+        if not key and self.provider != "Pollinations":
             self.current_llm = None
             return
 
@@ -35,6 +36,9 @@ class AIManager:
         elif self.provider == "Claude":
             model = self.config.get("claude_model", "claude-3-5-sonnet-20241022")
             self.current_llm = ClaudeProvider(key, model_name=model)
+        elif self.provider == "Pollinations":
+            model = self.config.get("pollinations_model", "openai")
+            self.current_llm = PollinationsProvider(api_key=None, model_name=model)
 
     def set_provider(self, provider_name):
         self.config.set("provider", provider_name)
@@ -50,7 +54,6 @@ class AIManager:
             prompt = self._get_system_prompt(sass_level, user_speech_text, language)
             
             # Delegate to the specific provider implementation
-            # Note: The provider classes handle image conversion/encoding internally
             response = self.current_llm.generate_roast(image_bytes, user_speech_text, prompt, language)
             return response
 

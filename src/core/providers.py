@@ -103,3 +103,40 @@ class ClaudeProvider(LLMProvider):
             return message.content[0].text
         except Exception as e:
             return f"Claude Error ({self.model_name}): {str(e)}"
+
+class PollinationsProvider(LLMProvider):
+    def __init__(self, api_key=None, model_name="openai"):
+        super().__init__(api_key)
+        self.model_name = model_name
+        self.api_url = "https://text.pollinations.ai/"
+
+    def generate_roast(self, image_bytes, user_text, system_prompt, language="English"):
+        # Pollinations Free Tier (Blind Roast)
+        fallback_vision_text = (
+            f"[SYSTEM: You are in 'Free Mode'. You CANNOT see the user. "
+            f"Roast them based on their voice input: '{user_text}'. "
+            f"If they are silent, mock their silence. Invent a reason why you can't see them.]"
+        )
+
+        full_prompt = f"{system_prompt}\n\n{fallback_vision_text}"
+        
+        payload = {
+            "messages": [
+                {"role": "system", "content": full_prompt},
+                {"role": "user", "content": user_text if user_text else "..."}
+            ],
+            "model": self.model_name,
+            "jsonMode": False
+        }
+
+        try:
+            import requests
+            headers = {"Content-Type": "application/json"}
+            # We use 'openai' as the default model routing for Pollinations
+            response = requests.post(f"{self.api_url}{self.model_name}", json=payload, headers=headers)
+            if response.status_code == 200:
+                return response.text
+            else:
+                return f"Pollinations Error: {response.status_code} - {response.text}"
+        except Exception as e:
+            return f"Pollinations Connection Error: {str(e)}"

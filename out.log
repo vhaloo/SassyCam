@@ -1,10 +1,30 @@
+Starting SassyCam v0.0.1
 Loading OpenAI Whisper model (tiny)...
 Loading Kokoro model...
 Kokoro model loaded successfully.
 Opening camera 1...
-Hearing something... (Energy: 0.0147)
+Hearing something... (Energy: 0.0128)
 input overflow
 OpenAI Whisper model loaded.
+Starting capture loop on camera 1...Camera thread started.
+
 Silence detected, transcribing...
-Hearing something... (Energy: 0.0055)
+Hearing something... (Energy: 0.0053)
 Silence detected, transcribing...
+Hearing something... (Energy: 0.0097)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0074)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0078)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0054)
+Silence detected, transcribing...
+Generating English speech for: Gemini Error (gemini-2.5-flash): 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]

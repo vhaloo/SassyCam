@@ -1,5 +1,8 @@
 Traceback (most recent call last):
-  File "C:\Users\Vhaloo\SassyCam\src\ui\main_window.py", line 356, in open_settings
-    self.ai.set_api_key(self.config.get("api_key"))
-    ^^^^^^^^^^^^^^^^^^^
-AttributeError: 'AIManager' object has no attribute 'set_api_key'
+  File "C:\Users\Vhaloo\SassyCam\src\ui\main_window.py", line 434, in closeEvent
+    self.ros.stop()
+    ~~~~~~~~~~~~~^^
+  File "C:\Users\Vhaloo\SassyCam\src\core\ros_manager.py", line 53, in stop
+    if rclpy.ok():
+       ^^^^^
+NameError: name 'rclpy' is not defined
