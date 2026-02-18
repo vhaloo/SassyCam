@@ -7,21 +7,27 @@ from kokoro_onnx import Kokoro
 import threading
 import queue
 
+from src.core.resource_manager import ResourceManager
+
 class TTSManager:
     def __init__(self, assets_dir="assets", output_device=None, status_callback=None):
-        self.assets_dir = assets_dir
+        self.assets_dir = ResourceManager.get_path(assets_dir)
         self.output_device = output_device
-        self.status_callback = status_callback # Function taking (bool)
-        self.model_path = os.path.join(assets_dir, "kokoro-v1.0.onnx")
-        self.voices_path = os.path.join(assets_dir, "voices-v1.0.bin")
+        self.status_callback = status_callback 
+        self.model_path = os.path.join(self.assets_dir, "kokoro-v1.0.onnx")
+        self.voices_path = os.path.join(self.assets_dir, "voices-v1.0.bin")
         self.kokoro = None
         self.audio_queue = queue.Queue()
         self.is_playing = False
         self.lock = threading.Lock()
         
-        # Ensure assets directory exists
+        # Ensure assets directory exists (only if not frozen/compiled, or handle in appdata)
+        # For compiled app, we might want to use a user data dir instead of local
         if not os.path.exists(self.assets_dir):
-            os.makedirs(self.assets_dir)
+            try:
+                os.makedirs(self.assets_dir)
+            except OSError:
+                pass # Might be read-only in Program Files
 
         # Initialize in a separate thread to not block UI
         threading.Thread(target=self._initialize_model, daemon=True).start()

@@ -3,9 +3,12 @@ import PIL.Image
 import io
 
 class AIManager:
+    # Explicitly pin the version. 'gemini-1.5-flash' is the current stable standard.
+    STABLE_MODEL_VERSION = 'gemini-1.5-flash'
+
     def __init__(self, api_key=None):
         self.api_key = api_key
-        self.model_name = 'gemini-2.5-flash'
+        self.model_name = self.STABLE_MODEL_VERSION
         if self.api_key:
             genai.configure(api_key=self.api_key)
             self.model = genai.GenerativeModel(self.model_name)
@@ -16,6 +19,16 @@ class AIManager:
         self.api_key = api_key
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel(self.model_name)
+
+    def validate_api(self):
+        """ Checks if the model is actually available with the current key """
+        if not self.model: return False, "No API Key"
+        try:
+            # Simple test generation
+            self.model.generate_content("test")
+            return True, "OK"
+        except Exception as e:
+            return False, str(e)
 
     def generate_sass(self, image_bytes, user_speech_text, sass_level=50):
         if not self.model:
@@ -30,14 +43,9 @@ class AIManager:
             response = self.model.generate_content([prompt, image])
             return response.text
         except Exception as e:
+            # Fallback handling
             if "404" in str(e):
-                # Try fallback to gemini-pro or gemini-3-flash-preview
-                try:
-                    self.model_name = 'gemini-3-flash-preview'
-                    self.model = genai.GenerativeModel(self.model_name)
-                    return self.generate_sass(image_bytes, user_speech_text, sass_level)
-                except:
-                    return f"Look, I'm trying to roast you but the API is acting up. Error: {e}"
+                return f"API Error: The model {self.model_name} isn't responding. Check your region or key."
             return f"Error: {e}"
 
     def _get_system_prompt(self, sass_level, user_speech_text):
