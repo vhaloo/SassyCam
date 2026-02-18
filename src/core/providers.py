@@ -131,11 +131,19 @@ class PollinationsProvider(LLMProvider):
 
         try:
             import requests
+            import json
             headers = {"Content-Type": "application/json"}
             # We use 'openai' as the default model routing for Pollinations
             response = requests.post(f"{self.api_url}{self.model_name}", json=payload, headers=headers)
             if response.status_code == 200:
-                return response.text
+                try:
+                    # Pollinations returns OpenAI-compatible JSON
+                    data = response.json()
+                    content = data["choices"][0]["message"]["content"]
+                    return content
+                except (KeyError, json.JSONDecodeError):
+                    # Fallback if response is just text or unexpected format
+                    return response.text
             else:
                 return f"Pollinations Error: {response.status_code} - {response.text}"
         except Exception as e:
