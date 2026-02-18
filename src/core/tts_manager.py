@@ -69,16 +69,31 @@ class TTSManager:
             if os.path.exists(dest):
                 os.remove(dest) # Remove partial file
 
-    def speak(self, text, voice="af_heart"):
+    LANG_MAP = {
+        "English": {"code": "en-us", "default_voice": "af_heart"},
+        "French": {"code": "fr-fr", "default_voice": "ff_siwis"},
+        "Japanese": {"code": "ja-jp", "default_voice": "jf_alpha"},
+        "Korean": {"code": "ko-kr", "default_voice": "kf_alpha"},
+        "Chinese": {"code": "zh-cn", "default_voice": "zf_alpha"},
+        "Spanish": {"code": "es-es", "default_voice": "ef_alpha"}
+    }
+
+    def speak(self, text, voice="af_heart", language="English"):
         if not self.kokoro:
             print("TTS model not loaded yet.")
             return
 
-        print(f"Generating speech for: {text}")
+        lang_cfg = self.LANG_MAP.get(language, self.LANG_MAP["English"])
+        lang_code = lang_cfg["code"]
+        
+        # If the voice doesn't match the language prefix (e.g. 'af' for 'en-us'), 
+        # use the default voice for that language to avoid errors.
+        if not voice.startswith(lang_code[0]):
+            voice = lang_cfg["default_voice"]
+
+        print(f"Generating {language} speech for: {text}")
         try:
-            # Generate audio
-            # Kokoro create returns (samples, sample_rate)
-            samples, sample_rate = self.kokoro.create(text, voice=voice, speed=1.0, lang="en-us")
+            samples, sample_rate = self.kokoro.create(text, voice=voice, speed=1.0, lang=lang_code)
             if samples is not None:
                 self.audio_queue.put((samples, sample_rate))
         except Exception as e:

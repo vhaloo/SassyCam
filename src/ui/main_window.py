@@ -66,9 +66,15 @@ class SettingsDialog(QDialog):
         self.whisper_combo.setCurrentText(self.config_manager.get("whisper_model"))
         self.layout.addRow("Whisper Model:", self.whisper_combo)
 
+        # Language
+        self.lang_combo = QComboBox()
+        self.lang_combo.addItems(["English", "French", "Japanese", "Korean", "Chinese", "Spanish"])
+        self.lang_combo.setCurrentText(self.config_manager.get("language"))
+        self.layout.addRow("Response Language:", self.lang_combo)
+
         # Voice
         self.voice_combo = QComboBox()
-        self.voice_combo.addItems(["af_heart", "af_bella", "af_nicole", "af_sarah", "am_adam", "am_michael"])
+        self.voice_combo.addItems(["af_heart", "af_bella", "af_nicole", "af_sarah", "am_adam", "am_michael", "ff_siwis", "jf_alpha", "kf_alpha", "zf_alpha", "ef_alpha"])
         self.voice_combo.setCurrentText(self.config_manager.get("voice_code"))
         self.layout.addRow("Voice:", self.voice_combo)
 
@@ -120,6 +126,7 @@ class SettingsDialog(QDialog):
         self.config_manager.set("audio_input_device", self.audio_input_combo.currentData())
         self.config_manager.set("audio_output_device", self.audio_output_combo.currentData())
         self.config_manager.set("whisper_model", self.whisper_combo.currentText())
+        self.config_manager.set("language", self.lang_combo.currentText())
         self.config_manager.set("voice_code", self.voice_combo.currentText())
         self.config_manager.set("auto_sass_interval", self.interval_slider.value())
         self.config_manager.set("mic_threshold", self.mic_slider.value() / 1000.0)
@@ -345,10 +352,11 @@ class MainWindow(QMainWindow):
             ret, buffer = cv2.imencode('.jpg', frame)
             image_bytes = buffer.tobytes()
             sass_level = self.config.get("sass_level")
-            response = self.ai.generate_sass(image_bytes, user_text, sass_level)
+            language = self.config.get("language")
+            response = self.ai.generate_sass(image_bytes, user_text, sass_level, language)
             self.log(f"SassyCam: {response}")
             self.ros.publish_roast(response) # ROS Integration
-            self.tts.speak(response, self.config.get("voice_code"))
+            self.tts.speak(response, self.config.get("voice_code"), language)
         except Exception as e:
             self.log(f"Error: {e}")
         finally:

@@ -1,8 +1,57 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script, and contain the paths for
+#  the source files that should be packaged into the executable.
+#  Feel free to un-comment if you want to include them.
+# SassyCam.spec
+
+# Installer / Release folders
+SassyCam_Release/
+SassyCam_Windows_v0.0.1.zip
+SassyCam_v0.0.1_Multilingual.zip
+
+# Assets (Models downloaded at runtime)
+assets/
+
+# Local configuration
 config.json
-assets/*.onnx
-assets/*.bin
-.vscode/
-.idea/
+
+# Logs
+*.log
+
+# Virtual environment
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ROS 2 stuff
+install/
+log/
+colcon_test_nodes/

@@ -14,6 +14,7 @@ DEFAULT_CONFIG = {
     "whisper_model": "tiny",
     "auto_sass_interval": 45,
     "mic_threshold": 0.005,
+    "language": "English",
     "ros_enabled": False,
     "ros_node_name": "sassy_cam_node",
     "ros_roast_topic": "/sassy_cam/roast"
