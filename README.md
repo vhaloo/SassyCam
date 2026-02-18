@@ -30,11 +30,10 @@ SassyCam now speaks multiple languages! Using **Kokoro TTS**, it delivers roasts
 
 ### 🧠 Multi-Brain Support
 Choose your preferred AI provider in Settings:
-- **Google Gemini:** `gemini-1.5-flash` (Stable), `gemini-2.5-flash` (Experimental/Latest)
-- **OpenAI:** `gpt-4o` (Standard), `gpt-5.2` (Experimental)
-- **Anthropic Claude:** `claude-3.5-sonnet`, `claude-opus-4.6` (High Performance)
-
-*Note: SassyCam defaults to stable models. You can manually type in newer model IDs in the "Model Version" dropdown if you have early access.*
+- **Google Gemini:** `gemini-1.5-flash` (Recommended - Free, Fast, Vision Capable).
+- **OpenAI:** `gpt-4o` (Premium, Best Vision).
+- **Anthropic:** `claude-3.5-sonnet` (Creative).
+- **Pollinations:** `No-Login` (Free, **Text/Blind Only** - cannot see you).
 
 ### 🔐 Secure Authentication & Profiles
 - **Secure Storage:** API Keys are now stored in your OS's native **Keychain/Credential Locker** (not in plain text files).
