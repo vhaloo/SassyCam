@@ -76,6 +76,7 @@ class AIManager:
 
         except Exception as e:
             # Catch internal logic errors
+            print(f"DEBUG AI ERROR: {e}")
             error_msg = str(e)
             if "429" in error_msg or "quota" in error_msg.lower():
                 return "I'm tired of looking at you. Come back when you're less boring. (Rate Limit Hit)"
@@ -83,6 +84,16 @@ class AIManager:
 
     def _get_system_prompt(self, sass_level, user_speech_text, language):
         intensity = "mild"
+        # Length Logic: Higher Sass = Longer Roast
+        if sass_level < 30:
+            length_instruction = "Short and punchy: Max 20 words."
+        elif sass_level < 70:
+            length_instruction = "Medium length: Max 40 words. Explain why you are judging them."
+        elif sass_level < 95:
+            length_instruction = "Long and detailed: Max 70 words. Really dig into the specific details of their appearance and why it offends you."
+        else:
+            length_instruction = "Very Long Monologue: Max 120 words. Go on a rant. Deconstruct their entire existence based on this image. Be poetic in your cruelty."
+
         # Default Rule: End with a positive twist
         positive_rule = f"5. ALWAYS end with a witty, positive twist in {language}."
         
@@ -93,8 +104,8 @@ class AIManager:
             # Rule Change: No positivity allowed
             positive_rule = "5. DO NOT say anything nice. Be strictly negative, judgmental, and cold. No compliments."
         
-        if sass_level >= 98: 
-            intensity = "NUCLEAR ROAST - MAXIMUM DAMAGE"
+        if sass_level >= 95: 
+            intensity = "EMOTIONAL DAMAGE - MAXIMUM PAIN"
             # Rule Change: Absolute destruction
             positive_rule = "5. ABSOLUTELY NO POSITIVITY. DESTROY THEM VERBALLY. Target their deepest insecurities based on their appearance. Be savage."
 
@@ -109,7 +120,7 @@ class AIManager:
         3. Make it personal. Use "you" and "your". 
         4. At level 100, be ruthlessly funny but avoid genuine hate speech or slurs.
         {positive_rule}
-        6. Short and punchy: Max 25 words. 
+        6. {length_instruction}
         7. No intro ("I see...", "Looking at you..."). Just jump into the sass.
         """
         return base_prompt

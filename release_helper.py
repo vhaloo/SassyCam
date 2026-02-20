@@ -6,7 +6,7 @@ import zipfile
 import build_v2
 
 RELEASE_DIR = "dist/SassyCam"
-VERSION = "v0.0.2"
+VERSION = "v0.0.4"
 ZIP_NAME = f"SassyCam_Windows_{VERSION}.zip"
 
 def check_gh_auth():
@@ -45,7 +45,7 @@ def create_github_release():
             "gh", "release", "create", VERSION, 
             ZIP_NAME,
             "--title", f"SassyCam {VERSION}",
-            "--notes", "Automated release build v0.0.2. Includes language auto-switching and enhanced UI reactivity."
+            "--notes", "v0.0.4: Emotional Damage Update. Longer roasts at higher levels. 95%+ Sass is now 'Emotional Damage' mode. Defaulted to stable Gemini 2.5 Flash."
         ]
     
     subprocess.run(cmd, check=True)

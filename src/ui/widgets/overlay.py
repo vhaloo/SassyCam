@@ -65,7 +65,7 @@ class OverlayWidget(QLabel):
             background-color: rgba(0, 0, 0, 100);
             padding: 10px;
             border-radius: 10px;
-            {border};
+            border: {border};
         """)
         
         # Centering logic (bottom area)

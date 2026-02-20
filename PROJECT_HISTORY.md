@@ -4,43 +4,37 @@
 ... (Previous history retained)
 
 ## Session: February 19, 2026 (v0.0.3 - The Future Update)
+- Implemented latest 2026 models, Overlay, Splash, and Web Login.
+- Released v0.0.3 (Hotfixed).
+
+## Session: February 19, 2026 (v0.0.4 - Emotional Damage)
 
 ### Objectives
-- Research and integrate the latest 2026 AI models.
-- Implement "Web Login" / No-Key access.
-- Add visual Sass Overlay (subtitles) with dynamic styling.
-- Add Startup Splash Screen.
-- Release v0.0.3.
+- Default to stable `gemini-2.5-flash` model.
+- Implement "Emotional Damage" mode (>95% sass).
+- Scale roast length with sass level (more sass = longer rant).
+- Release v0.0.4.
 
 ### Actions Taken
-1.  **Model Research (2026):**
-    -   Verified latest models via search:
-        -   **Google:** `gemini-3.1-pro`, `gemini-3-flash`.
-        -   **OpenAI:** `gpt-5.1-chat-latest`, `gpt-5.2`.
-        -   **Anthropic:** `claude-3-opus-4.6`, `claude-3-sonnet-4.6`.
-    -   Updated `src/core/model_registry.py` and `src/core/ai_manager.py` to use these strings.
-
-2.  **UI Enhancements:**
-    -   **Overlay:** Created `src/ui/widgets/overlay.py`. Uses `QGraphicsDropShadowEffect` and dynamic stylesheets (Comic Sans vs Impact) based on Sass Level. Implemented screen shake for "Nuclear" mode.
-    -   **Splash:** Created `src/ui/widgets/splash.py`. A frameless, transparent window with a progress bar and witty loading text ("Polishing the lens...").
-    -   **Integration:** Updated `MainWindow` to show Splash on init and close it when Camera is ready. Added Overlay as a child of the video feed.
-
-3.  **Threading & Signals:**
-    -   Refactored `MainWindow` to use a `pyqtSignal(str, int)` for passing AI responses from the worker thread to the UI thread. This ensures the Overlay updates safely.
-
-4.  **Auth / "Web Login":**
-    -   Clarified "No Key" requirement: Implemented via the **Pollinations** provider (already present, but highlighted).
-    -   Updated `README.md` to feature this as the "Web Login / Proxy" option.
-
-5.  **Configuration:**
-    -   Set default Sass Level to **10%** in `config.json`.
-    -   Updated `requirements.txt` (fixed binary format issue).
+1.  **AI Logic**:
+    -   Modified `src/core/ai_manager.py` to scale `max_words` instruction from 20 words (Mild) to 120 words (Emotional Damage).
+    -   Renamed "Nuclear" prompt mode to "EMOTIONAL DAMAGE - MAXIMUM PAIN" for levels >= 95.
+2.  **Configuration**:
+    -   Updated `config.json` default Gemini model to `models/gemini-2.5-flash` (prefix required for `google.generativeai` client).
+    -   Updated `src/core/model_registry.py` to reflect the new default.
+3.  **UI**:
+    -   Updated `src/ui/widgets/sass_meter.py`: Changed label for >95% to "EMOTIONAL DAMAGE".
+    -   Fixed CSS syntax error in Overlay widget.
+4.  **Documentation**:
+    -   Updated `README.md` to v0.0.4, added "GitHub Description" block, and documented Emotional Damage mode.
+5.  **Release**:
+    -   Bumped version in `main.py`, `build_v2.py`, `release_helper.py`.
+    -   Built and tagged v0.0.4.
 
 ### Key Files
--   `src/ui/widgets/overlay.py`: The visual subtitle engine.
--   `src/ui/widgets/splash.py`: The startup loader.
--   `src/core/ai_manager.py`: Updated logic for 2026 models.
+-   `src/core/ai_manager.py`: Length scaling logic.
+-   `src/ui/widgets/sass_meter.py`: Label updates.
 
 ### Status
--   **Version:** v0.0.3
--   **Build:** Ready for release.
+-   **Version:** v0.0.4
+-   **Build:** Released.

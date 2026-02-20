@@ -71,11 +71,11 @@ class SassMeter(QWidget):
 
     def get_text(self):
         v = self._target_value
-        if v < 25: return "MILD""MILD"
+        if v < 25: return "MILD"
         if v < 50: return "SASSY"
         if v < 80: return "RUTHLESS"
         if v < 95: return "SAVAGE"
-        if v < 99: return "FATALITY"
+        if v >= 95: return "EMOTIONAL DAMAGE" # New Label
         return "NUCLEAR"
 
     def paintEvent(self, event):

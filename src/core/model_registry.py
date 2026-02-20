@@ -2,12 +2,9 @@ from dataclasses import dataclass
 from typing import List, Dict
 
 @dataclass
-class AIModel:
+class ModelInfo:
     id: str
     name: str
-    provider: str
-    capabilities: List[str] # e.g. ["vision", "text"]
-    is_experimental: bool = False
 
 class ModelRegistry:
     """
@@ -17,9 +14,10 @@ class ModelRegistry:
 
     MODELS = {
         "Gemini": [
-            ModelInfo("gemini-3.1-pro", "Gemini 3.1 Pro (Latest Flagship)"),
-            ModelInfo("gemini-3-flash", "Gemini 3 Flash (Fast & Free)"),
-            ModelInfo("gemini-3-deep-think", "Gemini 3 Deep Think (Reasoning)"),
+            ModelInfo("gemini-3.1-pro-preview", "Gemini 3.1 Pro (Preview)"),
+            ModelInfo("gemini-3-flash-preview", "Gemini 3 Flash (Preview)"),
+            ModelInfo("gemini-2.5-pro", "Gemini 2.5 Pro (Stable)"),
+            ModelInfo("gemini-2.5-flash", "Gemini 2.5 Flash (Stable)"),
             ModelInfo("gemini-2.0-flash", "Gemini 2.0 Flash (Legacy)"),
         ],
         "OpenAI": [
@@ -42,7 +40,7 @@ class ModelRegistry:
     }
 
     @classmethod
-    def get_models_for_provider(cls, provider: str) -> List[AIModel]:
+    def get_models_for_provider(cls, provider: str) -> List[ModelInfo]:
         return cls.MODELS.get(provider, [])
 
     @classmethod

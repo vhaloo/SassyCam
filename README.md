@@ -1,6 +1,8 @@
-# 📸 SassyCam v0.0.3
+# 📸 SassyCam v0.0.4
 
 **The AI Webcam that roasts you—with love (mostly).**
+
+> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic. Powered by Gemini 2.5 Flash, GPT-5, and Claude. Features dynamic audio-reactive UI, multilingual voice synthesis, and an "Emotional Damage" mode for extreme roasting.
 
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
@@ -11,31 +13,22 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 
 ---
 
-## ✨ New in v0.0.3 (The Future Update)
+## ✨ New in v0.0.4 (Emotional Damage Update)
 
-### 🧠 Latest 2026 AI Models
-We've integrated the cutting-edge models released in early 2026:
-- **Google:** `Gemini 3.1 Pro` (Flagship), `Gemini 3 Flash` (Fast).
-- **OpenAI:** `GPT-5.1 Chat` (Latest), `GPT-5.2` (High Intelligence).
-- **Anthropic:** `Claude 3 Opus 4.6`, `Claude Sonnet 4.6`.
+### 💔 Emotional Damage Mode (95%+)
+We've raised the ceiling. If you crank the Sass-O-Meter past 95%, SassyCam enters **Emotional Damage** mode.
+- **Longer Roasts:** The AI will now deliver extended monologues (up to 120 words) deconstructing your choices.
+- **Zero Mercy:** Positivity is disabled. It's just you and the hard truth.
 
-### 🎭 Dynamic Sass Overlay
-The roasting experience is now visual!
-- **Subtitle Overlay:** Sassy remarks appear directly on your video feed.
-- **Dynamic Styling:**
-  - **Mild (10-30%):** Pastel colors, Comic Sans, calm.
-  - **Savage (50-80%):** Bold text, sharper colors.
-  - **Nuclear (90%+):** **SHAKING RED TEXT**, Impact font, pure chaos.
+### 🧠 Stable 2026 Models
+- Defaulted to **Google Gemini 2.5 Flash** for maximum stability and speed on Windows.
+- Verified compatibility with GPT-5.1 Chat and Claude Sonnet 4.6.
 
-### 🔌 No-Key "Web Login" (Pollinations Proxy)
-Don't have an API key? No problem.
-- **Pollinations Provider:** Use GPT-4o, Claude 3.5, or Gemini Pro for **FREE** without an API key.
-- Just select "Pollinations" in settings and choose your flavor.
-- *Note:* This is a text-only proxy (blind mode) for privacy reasons, unless stated otherwise.
-
-### ⏱️ Startup Sequence
-- New **Sassy Splash Screen** that judges you while the app loads.
-- Progress bar with witty status updates ("Polishing the lens...", "Loading satire modules...").
+### 📜 Dynamic Roast Length
+- **Low Sass:** Short & Punchy (20 words).
+- **Med Sass:** Explained judgment (40 words).
+- **High Sass:** Detailed critique (70 words).
+- **Emotional Damage:** Full rant (100+ words).
 
 ---
 
@@ -43,7 +36,7 @@ Don't have an API key? No problem.
 
 ### 🟢 Windows (Installer)
 
-1. **Download:** Grab the [latest SassyCam_Windows_v0.0.3.zip](https://github.com/vhaloo/SassyCam/releases/latest).
+1. **Download:** Grab the [latest SassyCam_Windows_v0.0.4.zip](https://github.com/vhaloo/SassyCam/releases/latest).
 2. **Extract:** Unzip the folder.
 3. **Run:** Double-click **`Launch_SassyCam.bat`**.
 4. **Setup:** 
@@ -79,8 +72,8 @@ Don't have an API key? No problem.
 ### Sass-O-Meter
 - **0-30%:** Friendly, helpful, "Grandma mode".
 - **31-70%:** Standard SassyCam. Roast with love.
-- **71-99%:** Mean.
-- **100%:** **NUCLEAR.** The text shakes. The AI screams (textually). There is no mercy.
+- **71-94%:** Mean.
+- **95-100%:** **EMOTIONAL DAMAGE.** The text shakes. The roast never ends.
 
 ---
 
