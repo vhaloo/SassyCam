@@ -6,11 +6,11 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=['scipy.special.cython_special', 'tiktoken_ext.openai_public', 'tiktoken_ext'],
+    hiddenimports=['whisper', 'tiktoken_ext.openai_public', 'tiktoken_ext', 'scipy.special.cython_special', 'win32timezone'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['torch', 'torchaudio', 'torchvision'],
     noarchive=False,
     optimize=0,
 )

@@ -17,6 +17,7 @@ from src.core.auth_manager import AuthManager
 from src.core.model_registry import ModelRegistry
 from src.ui.login_dialog import LoginDialog
 from src.ui.styles import STYLESHEET
+from src.ui.widgets.sass_meter import SassMeter
 
 import cv2
 import numpy as np
@@ -274,13 +275,13 @@ class MainWindow(QMainWindow):
         
         # Sass Meter
         sass_layout = QVBoxLayout()
-        sass_label = QLabel("Sass-O-Meter")
-        sass_label.setObjectName("SassLabel")
-        self.sass_slider = QSlider(Qt.Orientation.Horizontal)
-        self.sass_slider.setRange(0, 100)
-        self.sass_slider.setValue(self.config.get("sass_level"))
+        # sass_label = QLabel("Sass-O-Meter") # Integrated into widget now
+        # sass_label.setObjectName("SassLabel")
+        
+        self.sass_slider = SassMeter(initial_value=self.config.get("sass_level"))
         self.sass_slider.valueChanged.connect(self.update_sass_level)
-        sass_layout.addWidget(sass_label)
+        
+        # sass_layout.addWidget(sass_label)
         sass_layout.addWidget(self.sass_slider)
         controls_layout.addLayout(sass_layout)
         
@@ -335,9 +336,12 @@ class MainWindow(QMainWindow):
 
     def update_sass_level(self, value):
         self.config.set("sass_level", value)
-        self.log(f"Sass Level set to: {value}")
+        # Verbose Log for significant changes (every 10%)
+        if value % 10 == 0:
+             self.log(f"VERBOSE: Sass Level adjusted to {value}%")
 
     def open_settings(self):
+        self.log("VERBOSE: Opening Settings Dialog...")
         dialog = SettingsDialog(self, self)
         if dialog.exec():
             # Apply settings
@@ -357,7 +361,7 @@ class MainWindow(QMainWindow):
                 if self.ros.enabled:
                     self.ros.stop()
             
-            self.log("Settings updated.")
+            self.log("VERBOSE: Settings applied and saved.")
 
     def log(self, text):
         self.log_area.append(f"[{time.strftime('%H:%M:%S')}] {text}")
@@ -365,45 +369,90 @@ class MainWindow(QMainWindow):
         sb.setValue(sb.maximum())
 
     def trigger_sass(self):
-        if self.is_processing_sass: return
+        if self.is_processing_sass: 
+            self.log("VERBOSE: Roast ignored (Already processing).")
+            return
+        self.log("VERBOSE: Manual roast trigger activated.")
         self.last_sass_time = time.time()
         threading.Thread(target=self._process_sass_thread, daemon=True).start()
 
     def check_status(self):
-        # Update Mic Dot Color
-        energy = self.audio.latest_energy
-        if self.audio.is_muted:
-            self.mic_status.setStyleSheet("color: #CF6679;")
-        elif energy > self.audio.energy_threshold:
-            self.mic_status.setStyleSheet("color: #03DAC6;")
-        elif energy > self.audio.energy_threshold * 0.5:
-            self.mic_status.setStyleSheet("color: #BB86FC;")
-        else:
-            self.mic_status.setStyleSheet("color: #333;")
+        try:
+            # Update Mic Dot Color & Sass Meter Reactivity
+            energy = self.audio.latest_energy
+            normalized_energy = min(1.0, energy / self.audio.energy_threshold) if self.audio.energy_threshold > 0 else 0
+            self.sass_slider.set_audio_energy(normalized_energy)
+            
+            if self.audio.is_muted:
+                self.mic_status.setStyleSheet("color: #CF6679;")
+            elif energy > self.audio.energy_threshold:
+                self.mic_status.setStyleSheet("color: #03DAC6;")
+            elif energy > self.audio.energy_threshold * 0.5:
+                self.mic_status.setStyleSheet("color: #BB86FC;")
+            else:
+                self.mic_status.setStyleSheet("color: #333;")
 
-        # Whisper Status
-        if not self.audio.is_ready:
-            self.statusBar().showMessage(f"Loading Whisper ({self.audio.model_size})...")
-        elif not self.is_processing_sass and not self.tts.is_playing:
-            self.statusBar().showMessage("Listening...")
+            # Whisper Status
+            if not self.audio.is_ready:
+                self.statusBar().showMessage(f"Loading Whisper ({self.audio.model_size})...")
+            elif not self.is_processing_sass and not self.tts.is_playing:
+                self.statusBar().showMessage("Listening...")
 
-        # Transcripts
-        transcript = self.audio.get_latest_transcript()
-        if transcript:
-            self.log(f"Heard: '{transcript}'")
-            if not self.is_processing_sass:
-                self.trigger_sass_with_context(transcript)
+            # Transcripts
+            result = self.audio.get_latest_transcript()
+            if result:
+                transcript, detected_lang_code = result
+                self.log(f"Heard ({detected_lang_code}): '{transcript}'")
+                
+                # Auto-Switch Language Logic
+                lang_map = {
+                    "en": "English",
+                    "fr": "French",
+                    "ja": "Japanese",
+                    "ko": "Korean",
+                    "zh": "Chinese",
+                    "es": "Spanish"
+                }
+                
+                detected_lang_name = lang_map.get(detected_lang_code)
+                current_lang_name = self.config.get("language")
+                
+                self.log(f"DEBUG: Detected '{detected_lang_code}' -> '{detected_lang_name}'. Current: '{current_lang_name}'")
+
+                if detected_lang_name and detected_lang_name != current_lang_name:
+                    self.log(f"VERBOSE: Switching language to {detected_lang_name}...")
+                    self.config.set("language", detected_lang_name)
+                    
+                    # Auto-switch voice to default for that language
+                    voice_defaults = {
+                        "English": "af_heart",
+                        "French": "ff_siwis",
+                        "Japanese": "jf_alpha",
+                        "Korean": "kf_alpha", 
+                        "Chinese": "zf_alpha",
+                        "Spanish": "ef_alpha"
+                    }
+                    new_voice = voice_defaults.get(detected_lang_name, "af_heart")
+                    self.config.set("voice_code", new_voice)
+                    self.log(f"VERBOSE: Switched voice to {new_voice}")
+
+                if not self.is_processing_sass:
+                    self.trigger_sass_with_context(transcript)
+        except Exception as e:
+            self.log(f"CRITICAL UI ERROR: {e}")
+            print(f"CRITICAL UI ERROR: {e}")
 
     def check_boredom(self):
         if self.is_processing_sass: return
         interval = self.config.get("auto_sass_interval")
         if time.time() - self.last_sass_time > interval:
-            self.log("Boredom check triggered...")
+            self.log("VERBOSE: Boredom threshold reached. Initiating roast.")
             self.trigger_sass_with_context("")
 
     def trigger_sass_with_context(self, text):
         if self.is_processing_sass: return
         self.last_sass_time = time.time()
+        self.log(f"VERBOSE: Triggering roast with context: '{text}'")
         threading.Thread(target=self._process_sass_thread, args=(text,), daemon=True).start()
 
     def _process_sass_thread(self, user_text=""):
@@ -412,18 +461,27 @@ class MainWindow(QMainWindow):
         try:
             frame = self.camera.get_snapshot()
             if frame is None:
-                self.log("Error: No camera frame.")
+                self.log("Error: No camera frame captured.")
                 return
-            ret, buffer = cv2.imencode('.jpg', frame)
-            image_bytes = buffer.tobytes()
+            
+            # Log analysis start
             sass_level = self.config.get("sass_level")
             language = self.config.get("language")
+            self.log(f"VERBOSE: Analyzing frame. Sass: {sass_level}, Lang: {language}")
+
+            ret, buffer = cv2.imencode('.jpg', frame)
+            image_bytes = buffer.tobytes()
+            
             response = self.ai.generate_sass(image_bytes, user_text, sass_level, language)
+            
             self.log(f"SassyCam: {response}")
             self.ros.publish_roast(response) # ROS Integration
+            
+            self.log("VERBOSE: Sending to TTS...")
             self.tts.speak(response, self.config.get("voice_code"), language)
+            
         except Exception as e:
-            self.log(f"Error: {e}")
+            self.log(f"Error in processing thread: {e}")
         finally:
             self.is_processing_sass = False
 

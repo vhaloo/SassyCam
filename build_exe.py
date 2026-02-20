@@ -1,29 +1,42 @@
 import PyInstaller.__main__
 import os
 import shutil
+import torch
 
 # 1. Clean previous build
 if os.path.exists("dist"): shutil.rmtree("dist")
 if os.path.exists("build"): shutil.rmtree("build")
 
-# 2. Define Assets
-# We need to collect the assets folder if it exists, but the code handles downloading them if missing.
-# However, for a "full" installer, we might want to bundle the ONNX models if we had them.
-# For now, let's assume 'assets' will be created/populated at runtime in the dist folder or AppData.
-# But we DO need to handle hidden imports for our libs.
+# 2. targeted DLL collection (Avoid collect_all to prevent recursion/hangs)
+torch_path = os.path.dirname(torch.__file__)
+torch_lib = os.path.join(torch_path, 'lib')
+libiomp = os.path.join(torch_lib, 'libiomp5md.dll')
+
+hiddenimports = [
+    'scipy.special.cython_special',
+    'tiktoken_ext.openai_public',
+    'tiktoken_ext',
+    'win32timezone',
+    'whisper'
+]
 
 args = [
     'main.py',
     '--name=SassyCam',
     '--noconsole',
-    '--icon=NONE', # TODO: Add an icon if available
-    # Hidden imports for dynamic libraries
-    '--hidden-import=scipy.special.cython_special',
-    '--hidden-import=tiktoken_ext.openai_public',
-    '--hidden-import=tiktoken_ext',
-    # Collect data for kokoro/whisper if needed (usually handled by the libs or downloaded)
-    # We rely on the app downloading models to the local 'assets' folder relative to the EXE.
+    '--icon=NONE',
+    '--runtime-hook=rthook_torch.py',
 ]
+
+# Manually add libiomp5md.dll to root if it exists
+if os.path.exists(libiomp):
+    args.append(f'--add-binary={libiomp}{os.pathsep}.')
+else:
+    print(f"Warning: {libiomp} not found. Build might fail at runtime.")
+
+# Add hidden imports
+for h in hiddenimports:
+    args.append(f'--hidden-import={h}')
 
 print("Starting PyInstaller Build...")
 PyInstaller.__main__.run(args)

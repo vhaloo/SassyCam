@@ -141,9 +141,11 @@ class AudioManager:
         try:
             result = self.model.transcribe(audio_data, fp16=False)
             text = result.get("text", "").strip()
+            language = result.get("language", "en") # Default to English if not found
+            
             if text:
-                print(f"User said: {text}")
-                self.transcript_queue.put(text)
+                print(f"User said ({language}): {text}")
+                self.transcript_queue.put((text, language))
         except Exception as e:
             print(f"Transcription error: {e}")
 

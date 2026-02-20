@@ -11,7 +11,7 @@ from src.core.resource_manager import ResourceManager
 
 class TTSManager:
     def __init__(self, assets_dir="assets", output_device=None, status_callback=None):
-        self.assets_dir = ResourceManager.get_path(assets_dir)
+        self.assets_dir = ResourceManager.get_user_data_path(assets_dir)
         self.output_device = output_device
         self.status_callback = status_callback 
         self.model_path = os.path.join(self.assets_dir, "kokoro-v1.0.onnx")
@@ -72,10 +72,9 @@ class TTSManager:
     LANG_MAP = {
         "English": {"code": "en-us", "default_voice": "af_heart"},
         "French": {"code": "fr-fr", "default_voice": "ff_siwis"},
-        "Japanese": {"code": "ja-jp", "default_voice": "jf_alpha"},
-        "Korean": {"code": "ko-kr", "default_voice": "kf_alpha"},
-        "Chinese": {"code": "zh-cn", "default_voice": "zf_alpha"},
-        "Spanish": {"code": "es-es", "default_voice": "ef_alpha"}
+        "Japanese": {"code": "ja", "default_voice": "jf_alpha"},
+        "Chinese": {"code": "cmn", "default_voice": "zf_alpha"},
+        "Spanish": {"code": "es", "default_voice": "ef_alpha"}
     }
 
     def speak(self, text, voice="af_heart", language="English"):
@@ -86,9 +85,9 @@ class TTSManager:
         lang_cfg = self.LANG_MAP.get(language, self.LANG_MAP["English"])
         lang_code = lang_cfg["code"]
         
-        # If the voice doesn't match the language prefix (e.g. 'af' for 'en-us'), 
+        # If the voice doesn't match the language prefix (e.g. 'af' for 'a'), 
         # use the default voice for that language to avoid errors.
-        if not voice.startswith(lang_code[0]):
+        if not voice.startswith(lang_code):
             voice = lang_cfg["default_voice"]
 
         print(f"Generating {language} speech for: {text}")

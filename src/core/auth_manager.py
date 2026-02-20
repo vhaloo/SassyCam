@@ -2,7 +2,6 @@ import os
 import json
 import keyring
 import base64
-from cryptography.fernet import Fernet
 from datetime import datetime
 
 class AuthManager:
@@ -13,21 +12,8 @@ class AuthManager:
     PROFILE_FILE = "profiles.json"
     
     def __init__(self):
-        self.key_file = "key.key"
-        self._load_master_key()
         self.profiles = self._load_profiles()
         self.current_user = None
-
-    def _load_master_key(self):
-        """Generates or loads a local encryption key for config files."""
-        if not os.path.exists(self.key_file):
-            self.cipher_key = Fernet.generate_key()
-            with open(self.key_file, "wb") as f:
-                f.write(self.cipher_key)
-        else:
-            with open(self.key_file, "rb") as f:
-                self.cipher_key = f.read()
-        self.cipher = Fernet(self.cipher_key)
 
     def _load_profiles(self):
         if not os.path.exists(self.PROFILE_FILE):

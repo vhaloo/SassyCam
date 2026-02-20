@@ -1,4 +1,4 @@
-# 📸 SassyCam v0.0.1
+# 📸 SassyCam v0.0.2
 
 **The AI Webcam that roasts you—with love (mostly).**
 
@@ -11,109 +11,116 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 
 ---
 
-## ✨ Key Features
+## ✨ Key Features (v0.0.2)
 
 ### 👁️ Visual Roasting (Vision AI)
-Powered by **Google Gemini 1.5 Flash**, SassyCam analyzes your webcam feed in real-time. It doesn't just see a face; it sees your unbrushed hair, your messy background laundry, and your "I haven't slept" expression.
+Powered by **Google Gemini 2.0 Flash** (or GPT-4o/Claude), SassyCam analyzes your webcam feed in real-time. It doesn't just see a face; it sees your unbrushed hair, your messy background laundry, and your "I haven't slept" expression.
 
-### 👂 Active Listening (Local STT)
-Integrating **OpenAI Whisper (Tiny/Medium)**, the app listens to your spoken reactions. If you try to argue back, SassyCam incorporates your "pathetic excuses" into its next roast. Processing happens **locally** for privacy and speed.
-
-### 🗣️ Multilingual Vocal Delivery (Local TTS)
-SassyCam now speaks multiple languages! Using **Kokoro TTS**, it delivers roasts with human-like intonation in:
+### 🗣️ Multilingual & Auto-Switching
+SassyCam **automatically detects** the language you are speaking and switches its roasting persona instantly!
 - 🇺🇸 **English**
 - 🇫🇷 **French**
 - 🇯🇵 **Japanese**
-- 🇰🇷 **Korean**
 - 🇨🇳 **Chinese**
 - 🇪🇸 **Spanish**
+- 🇰🇷 **Korean**
+
+Using **OpenAI Whisper (Base Model)** for accurate detection and **Kokoro TTS** for high-quality local speech.
+
+### 📊 Reactive Sass-O-Meter
+The UI is now alive!
+- **Audio Reactive:** The interface pulses and glows in sync with your voice.
+- **Sass Intensity:**
+    - **Mild:** Friendly banter.
+    - **Savage (80%+):** Zero positivity allowed.
+    - **Nuclear (98%+):** Ruthless destruction. "Fatality" mode engaged.
 
 ### 🧠 Multi-Brain Support
 Choose your preferred AI provider in Settings:
-- **Google Gemini:** `gemini-1.5-flash` (Recommended - Free, Fast, Vision Capable).
+- **Google Gemini:** `gemini-2.0-flash` (Recommended - Free, Fast, Vision Capable).
 - **OpenAI:** `gpt-4o` (Premium, Best Vision).
 - **Anthropic:** `claude-3.5-sonnet` (Creative).
 - **Pollinations:** `No-Login` (Free, **Text/Blind Only** - cannot see you).
 
-### 🔐 Secure Authentication & Profiles
-- **Secure Storage:** API Keys are now stored in your OS's native **Keychain/Credential Locker** (not in plain text files).
-- **User Profiles:** Create multiple local profiles (e.g., "Guest", "Admin") to keep settings separate.
-
-### 📊 Sass-O-Meter & Boredom Detection
-- **Adjustable Intensity:** From "Mild" banter to "Soul-Crushing" ruthlessness.
-- **Boredom Timer:** If you stay silent for too long, SassyCam gets bored and initiates a roast automatically.
-
 ---
 
-## 🚀 Getting Started
+## 🚀 Installation
 
-SassyCam is fully cross-compatible with **Windows, macOS, and Linux**.
+### 🟢 Windows (Easiest)
 
-### 🟢 For Non-Technical Users (One-Click Install)
-
-#### **Windows:**
-1. **Download:** Clone or download this repository.
-2. **Run:** Double-click **`install.bat`**. 
-3. **Wait:** It will automatically set up a private environment, install everything, and launch the app.
+1. **Download:** Grab the [latest SassyCam_Windows_v0.0.2.zip](https://github.com/vhaloo/SassyCam/releases/latest).
+2. **Extract:** Unzip the folder to a location of your choice.
+3. **Run:** Double-click **`Launch_SassyCam.bat`**.
 4. **Setup:** On the first run, click **Settings**, enter your **Gemini API Key**, and select your language.
 
-#### **macOS / Linux:**
-1. Open a terminal in the folder.
-2. Run `sh build_release.sh` to build or simply follow the Developer steps below.
+### 🟠 macOS / Linux (Source)
 
----
+Since we do not distribute binaries for macOS/Linux yet, you can run from source easily.
 
-## 🔑 Obtaining API Keys
+**Prerequisites:** Python 3.9+ installed.
 
-SassyCam supports multiple "brains". You only need one, but you can switch freely.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/vhaloo/SassyCam.git
+   cd SassyCam
+   ```
 
-### **Google Gemini (Recommended/Free)**
-1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey).
-2. Create and copy your key.
+2. **Create a virtual environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # macOS/Linux
+   # .\venv\Scripts\activate # Windows (PowerShell)
+   ```
 
-### **OpenAI (GPT-4o)**
-1. Visit [OpenAI Platform](https://platform.openai.com/api-keys).
-2. Create a new secret key. **Note:** Requires a funded account.
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *Note: On Linux, you may need `sudo apt-get install espeak-ng` for TTS support.*
 
-### **Anthropic (Claude 3)**
-1. Visit [Anthropic Console](https://console.anthropic.com/settings/keys).
-2. Generate an API Key.
+4. **Run the app:**
+   ```bash
+   python main.py
+   ```
 
 ---
 
 ## 🛠️ Configuration & Customization
 
 The **Settings** panel offers deep control:
-- **Response Language:** Switch between English, French, Spanish, etc.
-- **Voice Selection:** Choose specific voice models for your selected language.
+
+- **API Keys:** Enter keys for Gemini, OpenAI, or Anthropic. Keys are stored locally in `config.json`.
+- **Response Language:** Manually override language or let it Auto-Detect.
+- **Voice Selection:** Choose specific voice models (e.g., `af_bella`, `am_michael`) for your selected language.
 - **Hardware Selection:** Switch Cameras, Microphones, and Speakers instantly.
-- **Auto-Sass Interval:** Set the boredom timer (10s to 5m).
+- **Auto-Sass Interval:** Set the boredom timer (Default: 15s). SassyCam will roast you automatically if you are silent.
 - **Mic Sensitivity:** Visual feedback via the "Mic Dot" helps you find the perfect threshold.
 
----
-
-## 🏗️ Technical Architecture & Versioning
-
-- **Core:** `PyQt6` (GUI), `src.core.model_registry` (Model Management).
-- **AI:** `Gemini 1.5/2.5`, `GPT-4o/5.2`, `Claude 3.5/Opus`.
-- **Audio:** `Whisper` (STT), `Kokoro` (TTS).
-- **Security:** OS-native Keyring for API keys.
-- **Versioning:** Semantic Versioning (v0.0.1). Check `src/version.py`.
-
-### 🧪 Testing
-
-SassyCam includes a comprehensive test suite.
-To run tests:
-```bash
-python -m unittest discover tests
-```
-
-## 📜 License & Disclaimer
-
-**License:** Distributed under the **MIT License**.
-
-**Disclaimer:** SassyCam is for **entertainment purposes only**. We are not responsible for any ego damage sustained during use.
+### `config.json`
+Advanced users can edit `config.json` directly in the app root to tweak hidden settings like `system_prompt_override` or `max_history`.
 
 ---
+
+## 🤝 Contributing
+
+We welcome contributions! Whether it's adding new sassy prompts, fixing bugs, or porting to new platforms.
+
+1. **Fork** the repository.
+2. **Create a Branch** (`git checkout -b feature/NewSass`).
+3. **Commit** your changes.
+4. **Push** to the branch.
+5. **Open a Pull Request**.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📜 License
+
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
+
+---
+
+**Disclaimer:** SassyCam is for **entertainment purposes only**. We are not responsible for emotional damage, bruised egos, or sudden realizations that you need to clean your room.
 
 **Built with 🔥 by [Vhaloo](https://github.com/vhaloo)**

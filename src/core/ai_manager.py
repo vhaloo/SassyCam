@@ -55,17 +55,45 @@ class AIManager:
             
             # Delegate to the specific provider implementation
             response = self.current_llm.generate_roast(image_bytes, user_speech_text, prompt, language)
+            
+            # Check for provider errors returned as strings
+            if isinstance(response, str) and ("Error" in response or "429" in response):
+                if "429" in response or "quota" in response.lower():
+                     if language == "English":
+                         return "I'm tired of looking at you. Come back when you're less boring. (Rate Limit Hit)"
+                     elif language == "French":
+                         return "Je suis fatigué de te regarder. Reviens quand tu seras moins ennuyeux. (Limite atteinte)"
+                     elif language == "Japanese":
+                         return "あなたを見るのは飽きました。もっと面白くなってから出直してきなさい。（レート制限）"
+                     else:
+                         return "I'm tired of looking at you. Come back later. (Rate Limit Hit)"
+                return response
+
             return response
 
         except Exception as e:
+            # Catch internal logic errors
+            error_msg = str(e)
+            if "429" in error_msg or "quota" in error_msg.lower():
+                return "I'm tired of looking at you. Come back when you're less boring. (Rate Limit Hit)"
             return f"AI Error: {e}"
 
     def _get_system_prompt(self, sass_level, user_speech_text, language):
         intensity = "mild"
+        # Default Rule: End with a positive twist
+        positive_rule = f"5. ALWAYS end with a witty, positive twist in {language}."
+        
         if sass_level > 25: intensity = "passive-aggressive"
         if sass_level > 50: intensity = "uncomfortably personal"
-        if sass_level > 75: intensity = "ruthlessly judgmental"
-        if sass_level > 95: intensity = "soul-crushing"
+        if sass_level > 80: 
+            intensity = "VICIOUS and UNFORGIVING"
+            # Rule Change: No positivity allowed
+            positive_rule = "5. DO NOT say anything nice. Be strictly negative, judgmental, and cold. No compliments."
+        
+        if sass_level >= 98: 
+            intensity = "NUCLEAR ROAST - MAXIMUM DAMAGE"
+            # Rule Change: Absolute destruction
+            positive_rule = "5. ABSOLUTELY NO POSITIVITY. DESTROY THEM VERBALLY. Target their deepest insecurities based on their appearance. Be savage."
 
         base_prompt = f"""
         You are SassyCam, an AI trapped inside this user's webcam. You are bored, slightly judgmental, and have zero filter.
@@ -77,7 +105,7 @@ class AIManager:
         2. If the user spoke: "{user_speech_text}", mock their tone or the silliness of their statement in {language}.
         3. Make it personal. Use "you" and "your". 
         4. At level 100, be ruthlessly funny but avoid genuine hate speech or slurs.
-        5. ALWAYS end with a witty, positive twist in {language}.
+        {positive_rule}
         6. Short and punchy: Max 25 words. 
         7. No intro ("I see...", "Looking at you..."). Just jump into the sass.
         """

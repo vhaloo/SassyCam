@@ -3,28 +3,69 @@ Loading OpenAI Whisper model (tiny)...
 Loading Kokoro model...
 Kokoro model loaded successfully.
 Opening camera 1...
-Hearing something... (Energy: 0.0128)
+Hearing something... (Energy: 0.0144)
 input overflow
 OpenAI Whisper model loaded.
-Starting capture loop on camera 1...Camera thread started.
-
+Starting capture loop on camera 1...
+Camera thread started.
 Silence detected, transcribing...
-Hearing something... (Energy: 0.0053)
+User said: J'ai pas déjà pas d'éménés, on peut-être essayer de me voir, il me faut dire. Je me suis en train de me voir. Je me suis en train de me voir. Je suis en train de me voir. Je suis en train de me voir.
+Generating English speech for: Gemini Error (gemini-1.5-flash): 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+Hearing something... (Energy: 0.0091)
 Silence detected, transcribing...
-Hearing something... (Energy: 0.0097)
+User said: Do you ever feel good, stop? Goin'
+Generating English speech for: Gemini Error (gemini-1.5-flash): 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+Generating English speech for: Your lighting is as dead as your social life. The pitch-black void hides your flaws perfectly. You’ve never looked more symmetrical. Pure perfection!
+Generating English speech for: "Looking for the phone"? You're a lazy, orange floor-mat with the energy of a dead battery. Pure disappointment. Nice, bold eyeliner, though!
+Hearing something... (Energy: 0.0083)
 Silence detected, transcribing...
-Hearing something... (Energy: 0.0074)
+User said: health.
+Hearing something... (Energy: 0.0078)
+Silence detected, transcribing...
+User said: Well, that's not very nice of you for a clanker that does not know anything of a being alive.
+Generating English speech for: "Health"? You’re a hunched shadow hiding behind a lazy cat meme. Your posture is a cry for help, but your taste in memes is iconic.
+Hearing something... (Energy: 0.0103)
+Silence detected, transcribing...
+Generating English speech for: Your hair is an electrocuted bird’s nest and your silence is terrifying. At least those bold glasses prove you have impeccable taste in frames!
+Hearing something... (Energy: 0.0080)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0070)
 Silence detected, transcribing...
 Hearing something... (Energy: 0.0078)
 Silence detected, transcribing...
-Hearing something... (Energy: 0.0054)
+Hearing something... (Energy: 0.0060)
 Silence detected, transcribing...
-Generating English speech for: Gemini Error (gemini-2.5-flash): 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
+User said: very nice of you for someone who...
+Hearing something... (Energy: 0.0051)
+Silence detected, transcribing...
+Generating English speech for: Your hair is a sentient cloud of frizz and your lighting is tragic. Still, you’re rocking that "mad scientist" aesthetic beautifully!
+input overflow
+User said: It was not know how to be alive.
+Hearing something... (Energy: 0.0059)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0064)
+Silence detected, transcribing...
+User said: I don't think you know how to be alive though.
+Generating English speech for: Bold talk for a guy with a sentient bird's nest for hair. If this is "living," I'll stay digital. Killer frames, though!
+Hearing something... (Energy: 0.0078)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0108)
+Silence detected, transcribing...
+Hearing something... (Energy: 0.0107)
+Silence detected, transcribing...
+User said: Well, this is a very tame, can't you go more hot got me?
+Hearing something... (Energy: 0.0075)
+Silence detected, transcribing...
+Generating English speech for: Your hair is a sentient bird’s nest and this yellow lighting is tragic. You look completely unhinged, but your chaotic joy is genuinely refreshing!
+Hearing something... (Energy: 0.0099)
+Silence detected, transcribing...
+User said: screen.
+Hearing something... (Energy: 0.0051)
+Silence detected, transcribing...
+Transcription error: 'charmap' codec can't encode characters in position 11-14: character maps to <undefined>
+Hearing something... (Energy: 0.0062)
+Silence detected, transcribing...
+User said: Well.
+Hearing something... (Energy: 0.0052)
+Generating English speech for: "Screen"? Is that your IQ? Your hair is a frizzy catastrophe and this low angle is a nasal crime. You have great dental insurance, though!
+Silence detected, transcribing...

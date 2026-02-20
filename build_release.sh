@@ -4,10 +4,11 @@ echo "      SassyCam Standalone Installer Generator      "
 echo "==================================================="
 echo
 
-echo "[1/4] Installing Build Dependencies (PyInstaller)..."
+echo "[1/4] Installing Build Dependencies..."
 pip install pyinstaller
+pip install -r requirements.txt
 if [ $? -ne 0 ]; then
-    echo "Error installing PyInstaller."
+    echo "Error installing dependencies."
     exit 1
 fi
 
@@ -25,6 +26,8 @@ mkdir -p SassyCam_Release
 cp -r dist/SassyCam SassyCam_Release/
 cp README.md SassyCam_Release/
 cp LICENSE SassyCam_Release/
+cp Launch_SassyCam.bat SassyCam_Release/
+cp Launch_SassyCam.sh SassyCam_Release/
 
 echo
 echo "[4/4] Done! "

@@ -1,8 +1,5 @@
-Traceback (most recent call last):
-  File "C:\Users\Vhaloo\SassyCam\src\ui\main_window.py", line 434, in closeEvent
-    self.ros.stop()
-    ~~~~~~~~~~~~~^^
-  File "C:\Users\Vhaloo\SassyCam\src\core\ros_manager.py", line 53, in stop
-    if rclpy.ok():
-       ^^^^^
-NameError: name 'rclpy' is not defined
+qt.qpa.fonts: DirectWrite: CreateFontFaceFromHDC() failed (Indicates an error in an input file such as a font file.) for QFontDef(Family="8514oem", stylename=Regular, pointsize=10.5, pixelsize=20, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("8514oem", lfWidth=0, lfHeight=-20) dpi=96
+qt.qpa.fonts: DirectWrite: CreateFontFaceFromHDC() failed (Indicates an error in an input file such as a font file.) for QFontDef(Family="Fixedsys", stylename=Regular, pointsize=10.5, pixelsize=15, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("Fixedsys", lfWidth=0, lfHeight=-15) dpi=96
+qt.qpa.fonts: DirectWrite: CreateFontFaceFromHDC() failed (Indicates an error in an input file such as a font file.) for QFontDef(Family="Modern", stylename=Regular, pointsize=10.5, pixelsize=46, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("Modern", lfWidth=0, lfHeight=-46) dpi=96
+qt.qpa.fonts: DirectWrite: CreateFontFaceFromHDC() failed (Indicates an error in an input file such as a font file.) for QFontDef(Family="MS Sans Serif", stylename=Regular, pointsize=10.5, pixelsize=13, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("MS Sans Serif", lfWidth=0, lfHeight=-13) dpi=96
+qt.qpa.fonts: DirectWrite: CreateFontFaceFromHDC() failed (Indicates an error in an input file such as a font file.) for QFontDef(Family="MS Serif", stylename=Regular, pointsize=10.5, pixelsize=13, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("MS Serif", lfWidth=0, lfHeight=-13) dpi=96

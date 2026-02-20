@@ -50,5 +50,5 @@ class ROSManager:
     def stop(self):
         if self.node:
             self.node.destroy_node()
-        if rclpy.ok():
+        if ROS_AVAILABLE and rclpy.ok():
             rclpy.shutdown()

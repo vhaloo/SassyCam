@@ -8,13 +8,25 @@ import subprocess
 class ResourceManager:
     @staticmethod
     def get_path(relative_path):
-        """ Get absolute path to resource, works for dev and for PyInstaller """
+        """ Get absolute path to bundled resource (read-only in _MEIPASS) """
         try:
             # PyInstaller creates a temp folder and stores path in _MEIPASS
             base_path = sys._MEIPASS
-        except Exception:
+        except AttributeError:
             base_path = os.path.abspath(".")
 
+        return os.path.join(base_path, relative_path)
+
+    @staticmethod
+    def get_user_data_path(relative_path):
+        """ Get absolute path to persistent writable directory (EXE dir or CWD) """
+        if getattr(sys, 'frozen', False):
+            # If frozen, use the directory of the executable
+            base_path = os.path.dirname(sys.executable)
+        else:
+            # If not frozen, use the current working directory
+            base_path = os.path.abspath(".")
+            
         return os.path.join(base_path, relative_path)
 
     @staticmethod
