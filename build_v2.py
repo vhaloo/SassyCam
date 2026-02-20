@@ -5,7 +5,7 @@ import site
 import sys
 
 def build():
-    print("Starting SassyCam v0.0.4 Build Process...")
+    print("Starting SassyCam v0.0.5 Build Process...")
 
     # 1. Clean previous build
     if os.path.exists("dist"): shutil.rmtree("dist")
@@ -79,7 +79,7 @@ def build():
     if os.path.exists("Launch_SassyCam.bat"):
          shutil.copy("Launch_SassyCam.bat", os.path.join(root_dest, "Launch_SassyCam.bat"))
 
-    print("Build v0.0.4 Complete.")
+    print("Build v0.0.5 Complete.")
 
 if __name__ == "__main__":
     build()

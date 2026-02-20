@@ -1,7 +1,8 @@
-# 📸 SassyCam v0.0.4
+# 📸 SassyCam v0.0.5
 
 **The AI Webcam that roasts you—with love (mostly).**
 
+> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic. Powered by Gemini 2.5 Flash, GPT-5, and Claude. Features dynamic audio-reactive UI, multilingual voice synthesis, and an "Emotional Damage" mode for extreme roasting.
 
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
@@ -12,7 +13,11 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 
 ---
 
-## ✨ New in v0.0.4 (Emotional Damage Update)
+## ✨ New in v0.0.5 (Hotfix Update)
+
+### 🐛 Critical Fixes
+- Fixed a startup crash affecting v0.0.4.
+- All **Emotional Damage** features from v0.0.4 are included.
 
 ### 💔 Emotional Damage Mode (95%+)
 We've raised the ceiling. If you crank the Sass-O-Meter past 95%, SassyCam enters **Emotional Damage** mode.
@@ -35,7 +40,7 @@ We've raised the ceiling. If you crank the Sass-O-Meter past 95%, SassyCam enter
 
 ### 🟢 Windows (Installer)
 
-1. **Download:** Grab the [latest SassyCam_Windows_v0.0.4.zip](https://github.com/vhaloo/SassyCam/releases/latest).
+1. **Download:** Grab the [latest SassyCam_Windows_v0.0.5.zip](https://github.com/vhaloo/SassyCam/releases/latest).
 2. **Extract:** Unzip the folder.
 3. **Run:** Double-click **`Launch_SassyCam.bat`**.
 4. **Setup:** 
