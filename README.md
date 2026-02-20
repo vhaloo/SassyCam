@@ -2,7 +2,6 @@
 
 **The AI Webcam that roasts you—with love (mostly).**
 
-> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic. Powered by Gemini 2.5 Flash, GPT-5, and Claude. Features dynamic audio-reactive UI, multilingual voice synthesis, and an "Emotional Damage" mode for extreme roasting.
 
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
