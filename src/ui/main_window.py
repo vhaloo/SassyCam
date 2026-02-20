@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QLabel, QPushButton, QSlider, QTextEdit, 
                              QDialog, QLineEdit, QFormLayout, QComboBox, QCheckBox)
 from PyQt6.QtGui import QPixmap, QImage, QIcon
-from PyQt6.QtCore import Qt, QTimer, pyqtSlot
+from PyQt6.QtCore import Qt, QTimer, pyqtSlot, pyqtSignal
 
 from src.core.camera_manager import CameraManager
 from src.core.audio_manager import AudioManager
@@ -18,6 +18,8 @@ from src.core.model_registry import ModelRegistry
 from src.ui.login_dialog import LoginDialog
 from src.ui.styles import STYLESHEET
 from src.ui.widgets.sass_meter import SassMeter
+from src.ui.widgets.splash import SplashWidget
+from src.ui.widgets.overlay import OverlayWidget
 
 import cv2
 import numpy as np
@@ -187,6 +189,8 @@ class SettingsDialog(QDialog):
         self.main_window.ai.load_provider()
 
 class MainWindow(QMainWindow):
+    sass_generated = pyqtSignal(str, int) # Signal: Text, SassLevel
+
     def __init__(self):
         super().__init__()
         
@@ -195,11 +199,11 @@ class MainWindow(QMainWindow):
         if not self.auth.login("Guest"): # Try default guest login first
              pass 
 
-        # If we want a proper login dialog before showing main window:
-        # Note: In PyQt, typically you show login dialog before main window.
-        # We will handle this in main execution block below, or here.
+        # Splash Screen
+        self.splash = SplashWidget()
+        self.splash.show()
         
-        self.setWindowTitle("SassyCam v0.0.1")
+        self.setWindowTitle("SassyCam v0.0.3")
         self.setMinimumSize(800, 600)
         self.setGeometry(100, 100, 1000, 800)
         
@@ -207,6 +211,9 @@ class MainWindow(QMainWindow):
         self.config = ConfigManager()
         self.init_ui()
         
+        # Connect Signal
+        self.sass_generated.connect(self.on_sass_generated)
+
         self.camera = CameraManager(self.config.get("camera_index"))
         self.audio = AudioManager(
             model_size=self.config.get("whisper_model"),
@@ -269,6 +276,9 @@ class MainWindow(QMainWindow):
         self.video_label.setMinimumSize(640, 480)
         self.video_label.setStyleSheet("background-color: #000; border: 2px solid #333;")
         self.main_layout.addWidget(self.video_label, 1)
+
+        # Overlay (Subtitle) - Parented to Video Label
+        self.overlay = OverlayWidget(self.video_label)
         
         # Controls Area
         controls_layout = QHBoxLayout()
@@ -327,6 +337,9 @@ class MainWindow(QMainWindow):
             if not hasattr(self, '_first_ui_frame'):
                 self.statusBar().showMessage("Camera Feed Active")
                 self._first_ui_frame = True
+                # Close splash when camera is ready
+                if hasattr(self, 'splash'):
+                    self.splash.finish()
             self.update_video_feed(q_img)
 
     def update_video_feed(self, q_img):
@@ -477,13 +490,28 @@ class MainWindow(QMainWindow):
             self.log(f"SassyCam: {response}")
             self.ros.publish_roast(response) # ROS Integration
             
-            self.log("VERBOSE: Sending to TTS...")
-            self.tts.speak(response, self.config.get("voice_code"), language)
+            # Emit signal for UI updates (Main Thread)
+            self.sass_generated.emit(response, sass_level)
             
         except Exception as e:
             self.log(f"Error in processing thread: {e}")
         finally:
             self.is_processing_sass = False
+
+    @pyqtSlot(str, int)
+    def on_sass_generated(self, text, sass_level):
+        self.overlay.show_sass(text, sass_level)
+        
+        language = self.config.get("language")
+        self.log("VERBOSE: Sending to TTS...")
+        self.tts.speak(text, self.config.get("voice_code"), language)
+
+    def resizeEvent(self, event):
+        # Reposition overlay if visible
+        if hasattr(self, 'overlay') and self.overlay.isVisible():
+            # Trigger show_sass with current text to re-center
+            self.overlay.show_sass(self.overlay.text(), self.config.get("sass_level"))
+        super().resizeEvent(event)
 
     def closeEvent(self, event):
         self.camera.stop()

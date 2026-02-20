@@ -28,13 +28,16 @@ class AIManager:
             return
 
         if self.provider == "Gemini":
-            model = self.config.get("gemini_model", "gemini-1.5-flash")
+            # Default to latest 2026 models
+            model = self.config.get("gemini_model", "gemini-3.1-pro")
             self.current_llm = GeminiProvider(key, model_name=model)
         elif self.provider == "OpenAI":
-            model = self.config.get("openai_model", "gpt-4o")
+            # Default to latest 2026 models
+            model = self.config.get("openai_model", "gpt-5.1-chat-latest")
             self.current_llm = OpenAIProvider(key, model_name=model)
         elif self.provider == "Claude":
-            model = self.config.get("claude_model", "claude-3-5-sonnet-20241022")
+            # Default to latest 2026 models
+            model = self.config.get("claude_model", "claude-3-sonnet-4.6")
             self.current_llm = ClaudeProvider(key, model_name=model)
         elif self.provider == "Pollinations":
             model = self.config.get("pollinations_model", "openai")

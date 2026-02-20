@@ -14,27 +14,30 @@ class ModelRegistry:
     Central registry for available AI providers and their models.
     """
     PROVIDERS = ["Gemini", "OpenAI", "Claude", "Pollinations"]
-    
+
     MODELS = {
         "Gemini": [
-            AIModel("gemini-2.0-flash", "Gemini 2.0 Flash (Fast/Stable)", "Gemini", ["vision", "text"]),
-            AIModel("gemini-2.5-flash", "Gemini 2.5 Flash (Latest)", "Gemini", ["vision", "text"]),
-            AIModel("gemini-2.5-pro", "Gemini 2.5 Pro (High Reasoning)", "Gemini", ["vision", "text"]),
-            AIModel("gemini-flash-latest", "Gemini Flash Latest (Experimental)", "Gemini", ["vision", "text"], is_experimental=True),
+            ModelInfo("gemini-3.1-pro", "Gemini 3.1 Pro (Latest Flagship)"),
+            ModelInfo("gemini-3-flash", "Gemini 3 Flash (Fast & Free)"),
+            ModelInfo("gemini-3-deep-think", "Gemini 3 Deep Think (Reasoning)"),
+            ModelInfo("gemini-2.0-flash", "Gemini 2.0 Flash (Legacy)"),
         ],
         "OpenAI": [
-            AIModel("gpt-4o", "GPT-4o (Omni)", "OpenAI", ["vision", "text"]),
-            AIModel("gpt-4o-mini", "GPT-4o Mini (Fast)", "OpenAI", ["vision", "text"]),
-            AIModel("gpt-5.2", "GPT-5.2 (Experimental)", "OpenAI", ["vision", "text"], is_experimental=True),
+            ModelInfo("gpt-5.1-chat-latest", "GPT-5.1 Chat (Latest)"),
+            ModelInfo("gpt-5.2", "GPT-5.2 (High Intelligence)"),
+            ModelInfo("gpt-4o", "GPT-4o (Legacy)"),
         ],
         "Claude": [
-            AIModel("claude-3-5-sonnet-20241022", "Claude 3.5 Sonnet", "Claude", ["vision", "text"]),
-            AIModel("claude-3-opus-20240229", "Claude 3 Opus", "Claude", ["vision", "text"]),
-            AIModel("claude-opus-4.6", "Claude Opus 4.6 (Experimental)", "Claude", ["vision", "text"], is_experimental=True),
+            ModelInfo("claude-3-sonnet-4.6", "Claude Sonnet 4.6 (Balanced)"),
+            ModelInfo("claude-3-opus-4.6", "Claude Opus 4.6 (Smartest)"),
+            ModelInfo("claude-3-haiku-4.5", "Claude Haiku 4.5 (Fast)"),
         ],
         "Pollinations": [
-            AIModel("openai", "Free Tier (Blind/Text Only)", "Pollinations", ["text"]),
-            AIModel("search", "Free Tier (Web Search)", "Pollinations", ["text"]),
+            ModelInfo("openai", "GPT-4o (Free/Proxy)"),
+            ModelInfo("claude", "Claude 3.5 (Free/Proxy)"),
+            ModelInfo("gemini", "Gemini Pro (Free/Proxy)"),
+            ModelInfo("mistral", "Mistral Large (Free/Proxy)"),
+            ModelInfo("llama", "Llama 3 (Free/Proxy)"),
         ]
     }
 
