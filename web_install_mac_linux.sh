@@ -2,7 +2,7 @@
 
 # SassyCam Web Installer (macOS/Linux)
 
-REPO_URL="https://github.com/vhaloo/SassyCam/archive/refs/heads/main.zip"
+REPO_URL="https://github.com/vhaloo/SassyCam/archive/refs/heads/master.zip"
 INSTALL_DIR="$HOME/SassyCam_Install"
 
 echo "==================================================="

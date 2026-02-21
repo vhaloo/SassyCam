@@ -4,7 +4,7 @@ title SassyCam Web Installer
 color 1F
 
 :: URL to the SassyCam repository ZIP (Using placeholder, user must update)
-set "REPO_URL=https://github.com/vhaloo/SassyCam/archive/refs/heads/main.zip"
+set "REPO_URL=https://github.com/vhaloo/SassyCam/archive/refs/heads/master.zip"
 set "INSTALL_DIR=%USERPROFILE%\SassyCam_Install"
 
 echo ===================================================

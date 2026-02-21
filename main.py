@@ -93,7 +93,7 @@ from src.core.resource_manager import ResourceManager
 from src.version import __version__
 
 def main():
-    print("Starting SassyCam v0.0.5")
+    print(f"Starting SassyCam v{__version__}")
     
     ffmpeg_path = ResourceManager.ensure_ffmpeg()
     if not ffmpeg_path:
