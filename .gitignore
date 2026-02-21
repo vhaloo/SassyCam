@@ -56,6 +56,5 @@ install/
 log/
 colcon_test_nodes/
 
-SassyCam_Windows_v0.0.2.zip
-
+SassyCam_Windows_v*.zip
 key.key
