@@ -24,85 +24,71 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 ## ✨ New in v0.1.0 (The Devotion & Vision Update)
 
 ### 💖 Devotion Mode (-100 to 0)
-We've added a positive scale to the Sass-O-Meter. Sliding left triggers **Devotion Mode**.
-- **Supportive AI:** SassyCam becomes your biggest fan, focusing on your inner beauty and radiant soul.
-- **Environment Aware:** Compliments are woven into specific visual details like your clothing, lighting, and decor.
+Sliding left triggers **Devotion Mode**. SassyCam becomes your biggest fan, focusing on your inner beauty and radiant soul, woven into specific visual details like your clothing and decor.
 
 ### 🎨 Gemini 3.1 Multimodal Caricatures
-Native integration with the brand new **Nano Banana 2 (Gemini 3.1 Flash Image)**.
-- **Image-to-Image:** SassyCam sends your actual camera frame to the AI to ensure the caricature matches your features and environment perfectly.
-- **Dynamic Styles:** Generates varied art styles (Pencil, Watercolor, Charcoal, Digital) depending on the Sass Level.
-
-### 🔊 Perfect Sync Subtitles
-- **Hardware-Locked Timing:** Subtitles now appear and disappear in perfect sync with the audio hardware callback.
-- **Persistent Text:** Subtitles stay on screen for the exact duration of the speech.
+Native integration with **Gemini 3.1 Flash Image**. SassyCam sends your actual camera frame to the AI to ensure the caricature matches your features and environment perfectly.
 
 ---
 
-## 🚀 Quick Start (One-Liner Installation)
+## 🛠️ Step-by-Step Setup (For Beginners)
 
-If you have **Git** and **Python 3.10+** installed, copy and paste the command for your OS into your terminal:
+### 1. Prerequisites
+You need two free tools installed on your computer:
+-   **Python 3.10+**: [Download here](https://www.python.org/downloads/) (Crucial: Check "Add Python to PATH" during installation).
+-   **Git**: [Download here](https://git-scm.com/downloads).
 
-### 🪟 Windows
-```powershell
-git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python -m venv venv && venv\Scripts\python.exe -m pip install -r requirements.txt && venv\Scripts\python.exe main.py
-```
+### 2. Get an API Key
+SassyCam needs a "brain" to see and talk. 
+-   Go to **[Google AI Studio](https://aistudio.google.com/)**.
+-   Click **"Get API Key"** and copy your free key.
 
-### 🍎 macOS
-```bash
-git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
-```
+### 3. Install SassyCam
 
-### 🐧 Linux
-```bash
-git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
-```
+#### **🪟 Windows (Easiest Method)**
+1.  Download [Install_SassyCam.bat](https://github.com/vhaloo/SassyCam/blob/master/Install_SassyCam.bat).
+2.  Double-click it. It will handle the entire installation and launch the app for you.
 
----
-
-## 📦 Installation Options
-
-### 🟢 Windows (One-Click Installer)
-1.  **Download:** Download [Install_SassyCam.bat](https://github.com/vhaloo/SassyCam/blob/master/Install_SassyCam.bat) to any folder.
-2.  **Run:** Double-click the file. It will automatically clone the repo, set up a virtual environment, install all dependencies, and launch the app.
-
-### 🔵 Standalone Binary (Windows Only)
-1.  **Download:** Grab the [latest SassyCam_v0.1.0_Windows.zip](https://github.com/vhaloo/SassyCam/releases/latest).
-2.  **Extract & Run:** Unzip and double-click `SassyCam.exe`. No Python or Git required!
+#### **🍎 macOS / 🐧 Linux**
+1.  Open your **Terminal**.
+2.  Paste this and press Enter:
+    ```bash
+    git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
+    ```
 
 ---
 
-## 📋 Requirements
+## 🎮 How to Use
 
-### Software
-- **Python 3.10 - 3.14**: Required for source installation.
-- **Git**: Required for cloning the repository.
-- **Gemini API Key**: Essential for vision features and caricature generation. Get one for free at [Google AI Studio](https://aistudio.google.com/).
-
-### Hardware
-- **Webcam**: Any standard USB or integrated camera.
-- **Microphone**: Required for "Hearing" mode and voice reactivity.
-- **Speakers**: Required for Text-to-Speech (Kokoro engine).
-- **RAM**: 8GB+ recommended (Whisper and Kokoro run locally).
+1.  **Launch**: Once open, the app will initialize your camera and load the AI models locally.
+2.  **The Sass-O-Meter**: 
+    -   **Drag Left (-100 to 0)**: Compliment/Devotion Mode.
+    -   **Drag Right (0 to 100)**: Roast/Sass Mode.
+3.  **Talk to it**: Just start speaking! SassyCam listens for your voice and will respond to what you say.
+4.  **Get a Drawing**: Every time SassyCam speaks, it will concurrently generate a caricature. You can also manually click **"Generate Caricature"** to refresh the drawing based on the last response.
+5.  **Settings**: Click the "Settings" button to paste your API Key, change your voice, or switch cameras.
 
 ---
 
-## 🛠️ Configuration
+## ❓ Troubleshooting (Common Issues)
 
-### Sass-O-Meter Guide
-- **-100 to -67:** **DEVOTION.** Poetic odes to your soul.
-- **-66 to -34:** **FANBOY.** Enthusiastic hype-man.
-- **-33 to -1:** **SWEET.** Mild support.
-- **0 to 30%:** **MILD.** Passive-aggressive commentary.
-- **31 to 70%:** **SASSY.** Standard SassyCam experience.
-- **71 to 94%:** **SAVAGE.** Mean and personal.
-- **95 to 100%:** **EMOTIONAL DAMAGE.** Absolute verbal destruction.
+-   **"WinError 1114" (DLL Load Failed)**: This usually means a conflict with your graphics drivers or Python version. Ensure you are using Python 3.10-3.14 and have updated your Windows updates.
+-   **Black Screen / No Camera**: Go to **Settings** and try a different **Camera Index** (0, 1, or 2).
+-   **No Sound**: Ensure your output device is correct in **Settings**. The first time you use a new voice, it may take 10-20 seconds to download the voice file.
+-   **No Caricature**: Ensure your **Gemini API Key** is correctly entered in Settings.
 
 ---
 
-## 🤝 Contributing
+## 🤝 How to Contribute
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+We love community improvements! 
+1.  **Report Bugs**: Open an [Issue](https://github.com/vhaloo/SassyCam/issues) describing what happened.
+2.  **Suggest Features**: Want a "British Butler" mode? Tell us in the issues!
+3.  **Code**: 
+    -   Fork the repository.
+    -   Create a new branch (`git checkout -b feature/cool-new-thing`).
+    -   Commit your changes and push to GitHub.
+    -   Open a **Pull Request**.
 
 ---
 
