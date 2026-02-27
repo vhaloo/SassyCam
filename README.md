@@ -39,51 +39,64 @@ Native integration with the brand new **Nano Banana 2 (Gemini 3.1 Flash Image)**
 
 ---
 
-## 🚀 Installation
+## 🚀 Quick Start (One-Liner Installation)
 
-### 🟢 Windows (Installer)
+If you have **Git** and **Python 3.10+** installed, copy and paste the command for your OS into your terminal:
 
-1. **Download:** Grab the [latest SassyCam_Windows_v0.1.0.zip](https://github.com/vhaloo/SassyCam/releases/latest).
-2. **Extract:** Unzip the folder.
-3. **Run:** Double-click **`Launch_SassyCam.bat`**.
-4. **Setup:** 
-   - Sass-O-Meter now ranges from **-100 (Devotion)** to **100 (Nuclear)**.
-   - Go to **Settings** to provide your Gemini API key for vision features.
+### 🪟 Windows
+```powershell
+git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python -m venv venv && venv\Scripts\python.exe -m pip install -r requirements.txt && venv\Scripts\python.exe main.py
+```
 
-### 🟠 macOS / Linux (Source)
+### 🍎 macOS
+```bash
+git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/vhaloo/SassyCam.git
-   cd SassyCam
-   ```
-2. Create venv & Install:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-3. Run:
-   ```bash
-   python main.py
-   ```
+### 🐧 Linux
+```bash
+git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
+```
+
+---
+
+## 📦 Installation Options
+
+### 🟢 Windows (One-Click Installer)
+1.  **Download:** Download [Install_SassyCam.bat](https://github.com/vhaloo/SassyCam/blob/master/Install_SassyCam.bat) to any folder.
+2.  **Run:** Double-click the file. It will automatically clone the repo, set up a virtual environment, install all dependencies, and launch the app.
+
+### 🔵 Standalone Binary (Windows Only)
+1.  **Download:** Grab the [latest SassyCam_v0.1.0_Windows.zip](https://github.com/vhaloo/SassyCam/releases/latest).
+2.  **Extract & Run:** Unzip and double-click `SassyCam.exe`. No Python or Git required!
+
+---
+
+## 📋 Requirements
+
+### Software
+- **Python 3.10 - 3.14**: Required for source installation.
+- **Git**: Required for cloning the repository.
+- **Gemini API Key**: Essential for vision features and caricature generation. Get one for free at [Google AI Studio](https://aistudio.google.com/).
+
+### Hardware
+- **Webcam**: Any standard USB or integrated camera.
+- **Microphone**: Required for "Hearing" mode and voice reactivity.
+- **Speakers**: Required for Text-to-Speech (Kokoro engine).
+- **RAM**: 8GB+ recommended (Whisper and Kokoro run locally).
 
 ---
 
 ## 🛠️ Configuration
 
-### Authentication Options
-1. **API Key (Recommended):** Enter your official key for Gemini (Imagen 3 / Nano Banana 2), OpenAI, or Anthropic.
-2. **Vision Support:** Requires a Gemini API key for the multimodal caricature generation.
-
-### Sass-O-Meter
+### Sass-O-Meter Guide
 - **-100 to -67:** **DEVOTION.** Poetic odes to your soul.
 - **-66 to -34:** **FANBOY.** Enthusiastic hype-man.
 - **-33 to -1:** **SWEET.** Mild support.
-- **0 to 30%:** **MILD.** Passive-aggressive.
-- **31-70%:** **SASSY.** Standard roast.
-- **71-94%:** **SAVAGE.** Mean.
-- **95-100%:** **EMOTIONAL DAMAGE.** Absolute destruction.
+- **0 to 30%:** **MILD.** Passive-aggressive commentary.
+- **31 to 70%:** **SASSY.** Standard SassyCam experience.
+- **71 to 94%:** **SAVAGE.** Mean and personal.
+- **95 to 100%:** **EMOTIONAL DAMAGE.** Absolute verbal destruction.
 
 ---
 
