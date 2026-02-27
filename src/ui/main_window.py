@@ -34,6 +34,11 @@ class SettingsDialog(QDialog):
         self.config_manager = main_window.config
         self.auth = main_window.auth
         self.layout = QFormLayout(self)
+
+        from src.version import __version__
+        version_label = QLabel(f"SassyCam v{__version__} - Powered by Gemini 3.1 Flash")
+        version_label.setStyleSheet("color: #888; font-size: 10px; margin-bottom: 10px;")
+        self.layout.addRow(version_label)
         
         # Provider Selection
         self.provider_combo = QComboBox()
@@ -393,6 +398,13 @@ class MainWindow(QMainWindow):
         self.folder_btn = QPushButton("Open Folder")
         self.folder_btn.clicked.connect(self.open_caricature_folder)
         controls_layout.addWidget(self.folder_btn)
+
+        # About Button
+        self.about_btn = QPushButton("?")
+        self.about_btn.setFixedWidth(30)
+        self.about_btn.setToolTip("About SassyCam")
+        self.about_btn.clicked.connect(self.open_about)
+        controls_layout.addWidget(self.about_btn)
         
         self.main_layout.addLayout(controls_layout)
         
@@ -702,6 +714,19 @@ class MainWindow(QMainWindow):
                 subprocess.Popen(["xdg-open", path])
         except Exception as e:
             self.log(f"Error opening folder: {e}")
+
+    def open_about(self):
+        from src.version import __version__
+        from PyQt6.QtWidgets import QMessageBox
+        msg = QMessageBox(self)
+        msg.setWindowTitle("About SassyCam")
+        msg.setText(f"<h3>SassyCam v{__version__}</h3>"
+                    f"<p>The sentient webcam companion that roasts or adores you.</p>"
+                    f"<p>Powered by the <b>latest Gemini 3.1 Flash (Nano Banana 2)</b> for enhanced "
+                    f"multimodal capabilities and superior performance.</p>"
+                    f"<p>Built with 🔥 by <b>Vhaloo</b>.</p>")
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.exec()
 
     @pyqtSlot(str, int)
     def on_sass_generated(self, text, sass_level):

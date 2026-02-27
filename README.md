@@ -2,7 +2,7 @@
 
 **The AI Webcam that roasts you—or adores you.**
 
-> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic or an obsessive admirer. Powered by Gemini 3.1 Flash (Nano Banana 2), GPT-5, and Claude. Features multimodal image-to-image caricatures, interactive art timeline, dynamic audio-reactive UI, and persistent localized subtitles.
+> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic or an obsessive admirer. Powered by the **latest Gemini 3.1 Flash (Nano Banana 2)** for enhanced capabilities and performance, alongside GPT-5 and Claude. Features multimodal image-to-image caricatures, interactive art timeline, dynamic audio-reactive UI, and persistent localized subtitles.
 
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
