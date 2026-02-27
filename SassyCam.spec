@@ -4,13 +4,13 @@
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
+    binaries=[('C:\\Users\\Vhaloo\\SassyCam\\venv\\Lib\\site-packages\\torch\\lib\\libiomp5md.dll', '.')],
     datas=[],
-    hiddenimports=['whisper', 'tiktoken_ext.openai_public', 'tiktoken_ext', 'scipy.special.cython_special', 'win32timezone'],
+    hiddenimports=['scipy.special.cython_special', 'tiktoken_ext.openai_public', 'tiktoken_ext', 'win32timezone', 'whisper'],
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
-    excludes=['torch', 'torchaudio', 'torchvision'],
+    runtime_hooks=['rthook_torch.py'],
+    excludes=[],
     noarchive=False,
     optimize=0,
 )

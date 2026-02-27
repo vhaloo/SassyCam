@@ -1,9 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
-title SassyCam v0.1.0 Installer
+title SassyCam v0.1.2 Installer
 
 echo ===================================================
-echo           SassyCam v0.1.0 One-Click Installer
+echo           SassyCam v0.1.2 One-Click Installer
 echo ===================================================
 echo.
 

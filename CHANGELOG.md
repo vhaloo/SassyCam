@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2026-02-27
+
+### Added
+- **Interactive Timeline**: Users can now single-click any caricature in the bottom scroll-area to display it in the large central viewport.
+- **External View**: Double-clicking any image (main or thumbnail) opens the original file in the system's default image viewer.
+- **Adaptive Viewport**: The central caricature view now automatically scales and resizes to fit the window size perfectly.
+- **Mood-Based Subtitle Styles**: Refined subtitle fonts and colors based on the current sass level (Elegant cursive for Devotion, Bold Impact for Nuclear).
+- **History persistence**: The app now automatically loads previous caricatures from `nanobanana-output` into the timeline on startup.
+
+### Changed
+- **Frame-Locked Subtitles**: Subtitles are now parented directly to the caricature frame, ensuring they stay pinned to the art even when resizing.
+- **Clean UI**: Removed flashing and vibrating text effects for better readability.
+- **Model Default**: Switched to `gemini-3.1-flash-image-preview` as the default high-speed brain.
+
+### Fixed
+- **Stability**: Fixed `TypeError` in `handle_tts_status` and refactored Gemini provider to use stable REST endpoints.
+- **Caricature Sync**: Improved concurrency between speech and image generation.
+
 ## [0.1.0] - 2026-02-27
 
 ### Added

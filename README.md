@@ -1,15 +1,13 @@
-# 📸 SassyCam v0.1.0
+# 📸 SassyCam v0.1.2
 
 **The AI Webcam that roasts you—or adores you.**
 
-> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic or an obsessive admirer. Powered by Gemini 3.1 Flash (Nano Banana 2), GPT-5, and Claude. Features multimodal image-to-image caricatures, dynamic audio-reactive UI, and persistent localized subtitles.
+> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic or an obsessive admirer. Powered by Gemini 3.1 Flash (Nano Banana 2), GPT-5, and Claude. Features multimodal image-to-image caricatures, interactive art timeline, dynamic audio-reactive UI, and persistent localized subtitles.
 
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/vhaloo/SassyCam)
-
-SassyCam is a sentient desktop companion that turns your webcam into a judgmental (but affectionate) critic. Using high-end AI vision and local speech processing, it watches you, listens to your excuses, and delivers punchy, context-aware commentary on your life, posture, and room cleanliness.
 
 ---
 
@@ -21,52 +19,57 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 
 ---
 
-## ✨ New in v0.1.0 (The Devotion & Vision Update)
+## ✨ New in v0.1.2 (The Interactive Gallery Update)
 
-### 💖 Devotion Mode (-100 to 0)
-Sliding left triggers **Devotion Mode**. SassyCam becomes your biggest fan, focusing on your inner beauty and radiant soul, woven into specific visual details like your clothing and decor.
+### 🎨 Interactive Caricature Gallery
+- **Timeline Browsing**: Single-click any thumbnail in the bottom history bar to immediately show it in the large central view.
+- **External View**: Double-click any caricature to open the high-resolution original in your system's default image viewer.
+- **Adaptive Viewport**: The main display automatically resizes and scales your artwork to perfectly fit your window.
+- **History Persistence**: SassyCam now remembers you. Your previous drawings are automatically loaded into the timeline every time you launch.
 
-### 🎨 Gemini 3.1 Multimodal Caricatures
-Native integration with **Gemini 3.1 Flash Image**. SassyCam sends your actual camera frame to the AI to ensure the caricature matches your features and environment perfectly.
+### 🔊 Enhanced Subtitles
+- **Frame-Locked Alignment**: Subtitles are now pinned to the bottom of the caricature frame, ensuring they stay with the art even during window resizing.
+- **Mood Styling**: Text fonts and colors now transition based on the AI's mood—elegant cursive for **Devotion**, aggressive Impact for **Roast**.
 
 ---
 
-## 🛠️ Step-by-Step Setup (For Beginners)
+## 🚀 Installation Options
 
-### 1. Prerequisites
-You need two free tools installed on your computer:
+### 🟢 Windows (One-Click Installer - Recommended)
+1.  **Download:** Download [Install_SassyCam.bat](https://github.com/vhaloo/SassyCam/blob/master/Install_SassyCam.bat).
+2.  **Run:** Double-click it. It will automatically clone the repo, set up a virtual environment, install dependencies, and launch.
+
+### 🔵 Standalone Binary (Windows Only)
+1.  **Download:** Grab the [latest SassyCam_v0.1.2_Windows.zip](https://github.com/vhaloo/SassyCam/releases/latest).
+2.  **Extract & Run:** Unzip and double-click `SassyCam.exe`. No Python or Git required!
+
+### 🟠 macOS / Linux (Source)
+1. Open your terminal and paste:
+```bash
+git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
+```
+
+---
+
+## 📋 Prerequisites (For neophytes)
+You need two free tools installed on your computer to run the source version:
 -   **Python 3.10+**: [Download here](https://www.python.org/downloads/) (Crucial: Check "Add Python to PATH" during installation).
 -   **Git**: [Download here](https://git-scm.com/downloads).
 
-### 2. Get an API Key
-SassyCam needs a "brain" to see and talk. 
--   Go to **[Google AI Studio](https://aistudio.google.com/)**.
--   Click **"Get API Key"** and copy your free key.
-
-### 3. Install SassyCam
-
-#### **🪟 Windows (Easiest Method)**
-1.  Download [Install_SassyCam.bat](https://github.com/vhaloo/SassyCam/blob/master/Install_SassyCam.bat).
-2.  Double-click it. It will handle the entire installation and launch the app for you.
-
-#### **🍎 macOS / 🐧 Linux**
-1.  Open your **Terminal**.
-2.  Paste this and press Enter:
-    ```bash
-    git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
-    ```
-
 ---
 
-## 🎮 How to Use
+## 🛠️ Configuration
 
-1.  **Launch**: Once open, the app will initialize your camera and load the AI models locally.
-2.  **The Sass-O-Meter**: 
-    -   **Drag Left (-100 to 0)**: Compliment/Devotion Mode.
-    -   **Drag Right (0 to 100)**: Roast/Sass Mode.
-3.  **Talk to it**: Just start speaking! SassyCam listens for your voice and will respond to what you say.
-4.  **Get a Drawing**: Every time SassyCam speaks, it will concurrently generate a caricature. You can also manually click **"Generate Caricature"** to refresh the drawing based on the last response.
-5.  **Settings**: Click the "Settings" button to paste your API Key, change your voice, or switch cameras.
+### 1. API Keys
+SassyCam requires a **Gemini API Key** for its vision and image generation features.
+- Get a free key at **[Google AI Studio](https://aistudio.google.com/)**.
+- Paste it into the **Settings** menu within the app.
+
+### 2. Sass-O-Meter Guide
+- **-100 to -67:** **DEVOTION.** Poetic odes to your soul.
+- **-66 to -34:** **FANBOY.** Enthusiastic hype-man.
+- **-33 to -1:** **SWEET.** Mild support.
+- **0 to 100:** **SASSY to NUCLEAR.** Standard to absolute verbal destruction.
 
 ---
 
@@ -82,13 +85,9 @@ SassyCam needs a "brain" to see and talk.
 ## 🤝 How to Contribute
 
 We love community improvements! 
-1.  **Report Bugs**: Open an [Issue](https://github.com/vhaloo/SassyCam/issues) describing what happened.
-2.  **Suggest Features**: Want a "British Butler" mode? Tell us in the issues!
-3.  **Code**: 
-    -   Fork the repository.
-    -   Create a new branch (`git checkout -b feature/cool-new-thing`).
-    -   Commit your changes and push to GitHub.
-    -   Open a **Pull Request**.
+1.  **Report Bugs**: Open an [Issue](https://github.com/vhaloo/SassyCam/issues).
+2.  **Suggest Features**: Want a new mode? Tell us in the issues!
+3.  **Code**: Fork the repo, commit changes, and open a **Pull Request**.
 
 ---
 

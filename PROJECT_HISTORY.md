@@ -1,5 +1,33 @@
 # Project History: SassyCam
 
+## Session: February 27, 2026 (v0.1.2 - The Interactive Gallery Update)
+
+### Objectives
+- Transform SassyCam into an interactive art gallery.
+- Implement timeline selection and external viewing.
+- Fix audio-related crashes and stabilize Gemini REST integration.
+- Ensure perfect subtitle alignment within the caricature frame.
+
+### Actions Taken
+1.  **UI Interactivity**:
+    -   Implemented `ClickableLabel` with `clicked` and `doubleClicked` signals.
+    -   Added horizontal gallery logic to populate thumbnails on startup.
+    -   Enabled single-click to swap main view and double-click to open in OS viewer.
+    -   Automated viewport scaling in `resizeEvent`.
+2.  **Subtitle Engineering**:
+    -   Parented `OverlayWidget` to the main image label.
+    -   Implemented static, mood-based CSS styling (Devotion pink, Roast red).
+3.  **Backend Stability**:
+    -   Corrected Gemini model ID to `gemini-3.1-flash-image-preview`.
+    -   Refactored `TTSManager` and `AudioManager` handshake to prevent type errors.
+4.  **Distribution**:
+    -   Updated README with detailed setup and troubleshooting for beginners.
+    -   Built and packaged standalone v0.1.2 Windows binary.
+
+### Status
+-   **Version:** v0.1.2
+-   **Build:** Stable & Released.
+
 ## Session: February 27, 2026 (v0.1.0 - The Devotion & Vision Update)
 
 ### Objectives
