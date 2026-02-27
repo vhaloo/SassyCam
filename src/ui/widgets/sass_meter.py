@@ -35,7 +35,7 @@ class SassMeter(QWidget):
 
     @value.setter
     def value(self, v):
-        self._target_value = max(0, min(100, v))
+        self._target_value = max(-100, min(100, v))
         self.valueChanged.emit(self._target_value)
 
     def update_animation(self):
@@ -62,7 +62,10 @@ class SassMeter(QWidget):
         self.update()
 
     def get_color(self, value):
-        # Cyberpunk Gradient Logic - More vivid
+        # Cyberpunk Gradient Logic - More vivid, including negative (compliments)
+        if value < -66: return QColor(255, 105, 180)  # Hot Pink (Amazing compliment)
+        if value < -33: return QColor(0, 255, 0)      # Green (Nice compliment)
+        if value < 0: return QColor(100, 200, 255)    # Light Blue (Mild compliment)
         if value < 25: return QColor(0, 255, 200)   # Cyan (Mild)
         if value < 50: return QColor(255, 200, 0)   # Yellow (Sassy)
         if value < 80: return QColor(255, 100, 0)   # Orange (Ruthless)
@@ -71,6 +74,9 @@ class SassMeter(QWidget):
 
     def get_text(self):
         v = self._target_value
+        if v < -66: return "DEVOTION"
+        if v < -33: return "FANBOY"
+        if v < 0: return "SWEET"
         if v < 25: return "MILD"
         if v < 50: return "SASSY"
         if v < 80: return "RUTHLESS"
@@ -103,7 +109,8 @@ class SassMeter(QWidget):
             painter.drawLine(int(x), 20, int(x), h-20)
 
         # Active Bar
-        bar_width = (w - 24) * (self._value / 100)
+        normalized_value = (self._value + 100) / 200 # Maps -100 to 0.0, and 100 to 1.0
+        bar_width = (w - 24) * normalized_value
         bar_rect = QRectF(12, 22, bar_width, h-44)
         
         base_color = self.get_color(self._value)
@@ -135,8 +142,8 @@ class SassMeter(QWidget):
         # Text Logic
         text = f"{self.get_text()} [{int(self._value)}%]"
         
-        # Font size scales with sass
-        font_size = 12 + int((self._value / 100) * 8) 
+        # Font size scales with intensity (both positive and negative)
+        font_size = 12 + int((abs(self._value) / 100) * 8) 
         font = QFont("Segoe UI", font_size, QFont.Weight.Bold)
         painter.setFont(font)
         
@@ -156,6 +163,8 @@ class SassMeter(QWidget):
         # Draw Main Text
         if self._value >= 98:
              painter.setPen(QColor(255, 0, 0)) # Red text for max danger
+        elif self._value <= -80:
+             painter.setPen(QColor(255, 105, 180)) # Pink text for super nice
         else:
              painter.setPen(QColor(255, 255, 255))
              
@@ -178,5 +187,5 @@ class SassMeter(QWidget):
         rel_x = max(12, min(x, w - 12)) - 12
         avail_w = w - 24
         
-        new_val = int((rel_x / avail_w) * 100)
+        new_val = int((rel_x / avail_w) * 200) - 100
         self.value = new_val

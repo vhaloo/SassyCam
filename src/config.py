@@ -16,7 +16,7 @@ DEFAULT_CONFIG = {
     "openai_model": "gpt-4o",
     "claude_model": "claude-3-5-sonnet-20241022",
     "whisper_model": "base",
-    "auto_sass_interval": 15,
+    "auto_sass_interval": 30,
     "mic_threshold": 0.005,
     "language": "English",
     "ros_enabled": False,

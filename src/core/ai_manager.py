@@ -47,6 +47,107 @@ class AIManager:
         self.config.set("provider", provider_name)
         self.load_provider()
 
+    def generate_caricature(self, sass_level, response_text, image_bytes=None):
+        import requests
+        import json
+        import base64
+        import os
+        import time
+        
+        # We need the Gemini API key
+        gemini_key = self.auth.get_api_key("Gemini")
+        if not gemini_key:
+            print("Cannot generate caricature: Gemini API Key is missing.")
+            return None
+            
+        # Determine style based on sass_level
+        if sass_level < -66:
+            style = "ethereal, angelic, highly detailed elegant pencil and watercolor drawing, beautiful soft lighting, masterpiece, 4K resolution"
+        elif sass_level < -33:
+            style = "radiant, happy, beautiful digital caricature drawing, vibrant colors, flattering, high quality"
+        elif sass_level < 0:
+            style = "friendly, cute, pleasant caricature sketch, soft art style"
+        elif sass_level < 30:
+            style = "slightly goofy caricature drawing, mild exaggeration, funny, hand-drawn style"
+        elif sass_level < 60:
+            style = "sassy cartoon caricature drawing, exaggerated features, humorous, comic book style"
+        elif sass_level < 90:
+            style = "unflattering grotesque caricature drawing, very exaggerated features, ugly, comedic, rough charcoal sketch"
+        else:
+            style = "horrifying monster caricature drawing, cursed image, absolute nightmare, maximum ugly, grotesque, dark messy sketch"
+
+        # Create a prompt combining the style and a summary of the response
+        short_text = response_text[:150] if len(response_text) > 150 else response_text
+        prompt = f"""
+        TASK: Create a caricature drawing based on the provided photo and description.
+        DESCRIPTION: {short_text}
+        ART STYLE: {style}
+        INSTRUCTIONS: 
+        1. Maintain a high level of resemblance to the person in the photo. 
+        2. Replicate the person's features (hair, glasses, expression) and the background decor closely.
+        3. Interpret the scene through the specified ART STYLE.
+        4. Do not add any text to the image.
+        """
+        
+        # Standard generateContent endpoint for multimodal output (Gemini 3.1)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key={gemini_key}"
+        
+        parts = [{"text": prompt}]
+        if image_bytes:
+            b64_image = base64.b64encode(image_bytes).decode('utf-8')
+            parts.append({
+                "inlineData": {
+                    "mimeType": "image/jpeg",
+                    "data": b64_image
+                }
+            })
+
+        payload = {
+            "contents": [
+                {
+                    "parts": parts
+                }
+            ],
+            "generationConfig": {
+                "responseModalities": ["TEXT", "IMAGE"]
+            }
+        }
+        
+        output_dir = os.path.join(os.path.expanduser("~"), "nanobanana-output")
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            
+        filename = f"caricature_{int(time.time())}.png"
+        filepath = os.path.join(output_dir, filename)
+
+        try:
+            print(f"Generating caricature using Gemini 3.1 Flash Image (multimodal with image input): {style}")
+            response = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=60)
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Multimodal response parsing
+                if "candidates" in data and len(data["candidates"]) > 0:
+                    parts = data["candidates"][0].get("content", {}).get("parts", [])
+                    for part in parts:
+                        if "inlineData" in part:
+                            img_info = part["inlineData"]
+                            b64_str = img_info.get("data")
+                            if b64_str:
+                                with open(filepath, "wb") as f:
+                                    f.write(base64.b64decode(b64_str))
+                                return filepath
+                
+                print(f"Gemini API success but no image part found. Response: {data}")
+                return None
+            else:
+                print(f"Gemini Image API Error: {response.status_code} - Body: {response.text}")
+                return None
+                
+        except Exception as e:
+            print(f"Failed to generate caricature via Gemini REST: {e}")
+            return None
+
     def generate_sass(self, image_bytes, user_speech_text, sass_level=50, language="English"):
         if not self.current_llm:
             self.load_provider()
@@ -84,6 +185,45 @@ class AIManager:
 
     def _get_system_prompt(self, sass_level, user_speech_text, language):
         intensity = "mild"
+        
+        # Compliment logic for negative sass levels
+        if sass_level < 0:
+            if sass_level > -33:
+                intensity = "mildly supportive"
+                length_instruction = "Short and sweet: Max 20 words."
+                compliment_rule = "1. Carefully observe their physical features, clothing, and the background. Comment on these specific details, but frame them as reflections of their gentle aura, kind eyes, and the warmth they bring to the world."
+                positive_rule = f"5. End with an encouraging remark about their inner light in {language}."
+                role = "supportive AI companion"
+            elif sass_level > -66:
+                intensity = "very complimentary"
+                length_instruction = "Medium length: Max 40 words. Explain how their inner beauty shines through their physical presence."
+                compliment_rule = "1. Analyze their face, posture, style, and room environment in detail. Praise how these specific physical elements radiate their beautiful soul, emotional depth, and positive energy."
+                positive_rule = f"5. Be a total hype-man/hype-woman for their personality and spirit in {language}."
+                role = "enthusiastic fan AI"
+            else:
+                intensity = "absolute simp / hopelessly in love"
+                length_instruction = "Long and detailed: Max 70 words. Write a poetic ode connecting their physical reality to their beautiful soul."
+                compliment_rule = "1. Closely examine every detail in the image: their hair, expression, clothing, lighting, and surroundings. Be absolutely overwhelmed by how these specific visual details perfectly manifest their profound inner beauty, wisdom, and grace. Treat them like a flawless deity."
+                positive_rule = f"5. Profess your unwavering adoration for their very essence in {language}."
+                role = "obsessed admirer AI"
+            
+            base_prompt = f"""
+            You are SassyCam, but currently operating in "Compliment Mode" as a {role}.
+            Current Compliment Intensity: {abs(sass_level)}/100 ({intensity}).
+            IMPORTANT: Respond ONLY in {language}. 
+
+            COMPLIMENT RULES:
+            {compliment_rule}
+            2. You MUST mention specific things you see in the image (e.g., the color of their shirt, the lighting, objects in the background, their smile).
+            3. If the user spoke: "{user_speech_text}", find a way to agree with them or praise the wisdom in their voice/ideas in {language}.
+            4. Make it personal. Use "you" and "your". 
+            5. Be genuinely deeply nice, focus on profound inner qualities reflected by their outer appearance, avoid any sarcasm.
+            {positive_rule}
+            7. {length_instruction}
+            8. No intro ("I see...", "Looking at you..."). Just jump right into the compliment.
+            """
+            return base_prompt
+
         # Length Logic: Higher Sass = Longer Roast
         if sass_level < 30:
             length_instruction = "Short and punchy: Max 20 words."

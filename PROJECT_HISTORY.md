@@ -1,40 +1,39 @@
 # Project History: SassyCam
 
-## Session: February 18, 2026 (DLL Hell & Build Engineering)
-... (Previous history retained)
-
-## Session: February 19, 2026 (v0.0.3 - The Future Update)
-- Implemented latest 2026 models, Overlay, Splash, and Web Login.
-- Released v0.0.3 (Hotfixed).
-
-## Session: February 19, 2026 (v0.0.4 - Emotional Damage)
+## Session: February 27, 2026 (v0.1.0 - The Devotion & Vision Update)
 
 ### Objectives
-- Default to stable `gemini-2.5-flash` model.
-- Implement "Emotional Damage" mode (>95% sass).
-- Scale roast length with sass level (more sass = longer rant).
-- Release v0.0.4.
+- Implement negative Sass-O-Meter scale (-100 to 100).
+- Add "Devotion Mode" for deep, environment-aware compliments.
+- Integrate Gemini 3.1 Flash Image (Nano Banana 2) for concurrent caricature generation.
+- Ensure visual resemblance in caricatures using multimodal image-to-image input.
+- Sync subtitles with TTS duration.
+- Fix PyTorch DLL crash issues caused by dependency conflicts.
 
 ### Actions Taken
-1.  **AI Logic**:
-    -   Modified `src/core/ai_manager.py` to scale `max_words` instruction from 20 words (Mild) to 120 words (Emotional Damage).
-    -   Renamed "Nuclear" prompt mode to "EMOTIONAL DAMAGE - MAXIMUM PAIN" for levels >= 95.
-2.  **Configuration**:
-    -   Updated `config.json` default Gemini model to `models/gemini-2.5-flash` (prefix required for `google.generativeai` client).
-    -   Updated `src/core/model_registry.py` to reflect the new default.
-3.  **UI**:
-    -   Updated `src/ui/widgets/sass_meter.py`: Changed label for >95% to "EMOTIONAL DAMAGE".
-    -   Fixed CSS syntax error in Overlay widget.
-4.  **Documentation**:
-    -   Updated `README.md` to v0.0.4, added "GitHub Description" block, and documented Emotional Damage mode.
-5.  **Release**:
-    -   Bumped version in `main.py`, `build_v2.py`, `release_helper.py`.
-    -   Built and tagged v0.0.4.
+1.  **UI Refactoring**:
+    -   Modified `SassMeter` to handle -100 to 100 range.
+    -   Added "DEVOTION" label and pink/lovely color palette for negative values.
+    -   Added `QProgressBar` and caricature display `QLabel` to `MainWindow`.
+    -   Updated `OverlayWidget` to remove auto-hide, syncing it with `TTSManager` status signals.
+2.  **AI & Vision Logic**:
+    -   Rewrote `AIManager._get_system_prompt` to include soul-focused, detailed compliment logic for negative sass levels.
+    -   Implemented `generate_caricature` using the latest February 27, 2026 Gemini REST API (v1beta generateContent).
+    -   Enabled multimodal image input for caricatures by sending the camera frame alongside the prompt.
+3.  **Environment Stability**:
+    -   Diagnosed and fixed "WinError 1114" DLL crash.
+    -   Isolated OpenAI/Anthropic imports (Lazy Loading) to prevent Pydantic version conflicts with PyTorch.
+    -   Cleaned and reinstalled compatible PyTorch CPU binaries.
+4.  **Publishing**:
+    -   Bumped version to v0.1.0.
+    -   Updated `CHANGELOG.md` and `PROJECT_HISTORY.md`.
+    -   Pushed latest features to GitHub.
 
 ### Key Files
--   `src/core/ai_manager.py`: Length scaling logic.
--   `src/ui/widgets/sass_meter.py`: Label updates.
+-   `src/core/ai_manager.py`: Gemini 3.1 Multimodal REST implementation.
+-   `src/ui/main_window.py`: Concurrency and UI orchestration.
+-   `src/ui/widgets/sass_meter.py`: Negative scale logic.
 
 ### Status
--   **Version:** v0.0.4
--   **Build:** Released.
+-   **Version:** v0.1.0 (Major Release)
+-   **Build:** Stable & Functional.

@@ -87,9 +87,6 @@ class OverlayWidget(QLabel):
             self.shake_timer.start(50)
         else:
             self.shake_timer.stop()
-            
-        # Hide after 5-8 seconds
-        QTimer.singleShot(6000, self.hide_overlay)
 
     def shake_frame(self):
         dx = random.randint(-self.intensity, self.intensity)

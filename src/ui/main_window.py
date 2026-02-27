@@ -3,7 +3,7 @@ import threading
 import time
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QSlider, QTextEdit, 
-                             QDialog, QLineEdit, QFormLayout, QComboBox, QCheckBox)
+                             QDialog, QLineEdit, QFormLayout, QComboBox, QCheckBox, QProgressBar)
 from PyQt6.QtGui import QPixmap, QImage, QIcon
 from PyQt6.QtCore import Qt, QTimer, pyqtSlot, pyqtSignal
 
@@ -190,6 +190,9 @@ class SettingsDialog(QDialog):
 
 class MainWindow(QMainWindow):
     sass_generated = pyqtSignal(str, int) # Signal: Text, SassLevel
+    tts_status_changed = pyqtSignal(bool) # Signal: is_speaking
+    caricature_generated = pyqtSignal(str) # Signal: image_path
+    processing_state_changed = pyqtSignal(bool) # Signal: is_processing
 
     def __init__(self):
         super().__init__()
@@ -213,6 +216,9 @@ class MainWindow(QMainWindow):
         
         # Connect Signal
         self.sass_generated.connect(self.on_sass_generated)
+        self.tts_status_changed.connect(self.handle_tts_status)
+        self.caricature_generated.connect(self.on_caricature_generated)
+        self.processing_state_changed.connect(self.handle_processing_state)
 
         self.camera = CameraManager(self.config.get("camera_index"))
         self.audio = AudioManager(
@@ -238,14 +244,32 @@ class MainWindow(QMainWindow):
             self.ros.start()
         
         self.is_processing_sass = False
+        self.is_processing_caricature = False
+        self.last_sass_text = "Just relaxing in front of the camera."
+        self.last_image_bytes = None
         self.start_systems()
 
     def on_tts_status_change(self, is_speaking):
+        self.tts_status_changed.emit(is_speaking)
+
+    @pyqtSlot(bool)
+    def handle_tts_status(self, is_speaking):
         self.audio.set_muted(is_speaking)
         if is_speaking:
             self.statusBar().showMessage("Speaking...")
         else:
             self.statusBar().showMessage("Ready.")
+            if hasattr(self, 'overlay') and self.overlay.isVisible():
+                self.overlay.hide_overlay()
+
+    @pyqtSlot(bool)
+    def handle_processing_state(self, is_processing):
+        if is_processing:
+            self.progress_bar.show()
+            self.progress_bar.setRange(0, 0) # Indeterminate loading
+        else:
+            self.progress_bar.hide()
+            self.progress_bar.setRange(0, 100)
 
     def init_ui(self):
         self.central_widget = QWidget()
@@ -271,11 +295,30 @@ class MainWindow(QMainWindow):
         self.main_layout.addLayout(header_layout)
         
         # Video Area
+        video_caricature_layout = QHBoxLayout()
         self.video_label = QLabel("Initializing Camera...")
         self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.video_label.setMinimumSize(640, 480)
         self.video_label.setStyleSheet("background-color: #000; border: 2px solid #333;")
-        self.main_layout.addWidget(self.video_label, 1)
+        video_caricature_layout.addWidget(self.video_label, 2)
+
+        # Caricature Area
+        caricature_layout = QVBoxLayout()
+        self.caricature_label = QLabel("Waiting for next Roast/Compliment...")
+        self.caricature_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.caricature_label.setMinimumSize(256, 256)
+        self.caricature_label.setStyleSheet("background-color: #111; border: 2px solid #555;")
+        caricature_layout.addWidget(self.caricature_label)
+        
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.hide()
+        caricature_layout.addWidget(self.progress_bar)
+        
+        video_caricature_layout.addLayout(caricature_layout, 1)
+        self.main_layout.addLayout(video_caricature_layout, 1)
 
         # Overlay (Subtitle) - Parented to Video Label
         self.overlay = OverlayWidget(self.video_label)
@@ -299,6 +342,11 @@ class MainWindow(QMainWindow):
         self.roast_btn = QPushButton("Roast Me Now")
         self.roast_btn.clicked.connect(self.trigger_sass)
         controls_layout.addWidget(self.roast_btn)
+        
+        # Caricature Trigger
+        self.caricature_btn = QPushButton("Generate Caricature")
+        self.caricature_btn.clicked.connect(self.trigger_caricature)
+        controls_layout.addWidget(self.caricature_btn)
         
         self.main_layout.addLayout(controls_layout)
         
@@ -388,6 +436,28 @@ class MainWindow(QMainWindow):
         self.log("VERBOSE: Manual roast trigger activated.")
         self.last_sass_time = time.time()
         threading.Thread(target=self._process_sass_thread, daemon=True).start()
+
+    def trigger_caricature(self):
+        if self.is_processing_caricature:
+            self.log("VERBOSE: Caricature generation already in progress.")
+            return
+        self.log("VERBOSE: Triggering manual caricature generation.")
+        threading.Thread(target=self._process_caricature_thread, daemon=True).start()
+
+    def _process_caricature_thread(self):
+        self.is_processing_caricature = True
+        self.processing_state_changed.emit(True)
+        try:
+            sass_level = self.config.get("sass_level")
+            self.log("VERBOSE: Generating caricature via API...")
+            image_path = self.ai.generate_caricature(sass_level, self.last_sass_text, self.last_image_bytes)
+            if image_path:
+                self.caricature_generated.emit(image_path)
+        except Exception as e:
+            self.log(f"Error in caricature thread: {e}")
+        finally:
+            self.is_processing_caricature = False
+            self.processing_state_changed.emit(False)
 
     def check_status(self):
         try:
@@ -484,19 +554,35 @@ class MainWindow(QMainWindow):
 
             ret, buffer = cv2.imencode('.jpg', frame)
             image_bytes = buffer.tobytes()
+            self.last_image_bytes = image_bytes
             
             response = self.ai.generate_sass(image_bytes, user_text, sass_level, language)
+            self.last_sass_text = response
             
             self.log(f"SassyCam: {response}")
             self.ros.publish_roast(response) # ROS Integration
             
             # Emit signal for UI updates (Main Thread)
             self.sass_generated.emit(response, sass_level)
+
+            # Trigger caricature concurrently
+            if not self.is_processing_caricature:
+                threading.Thread(target=self._process_caricature_thread, daemon=True).start()
             
         except Exception as e:
             self.log(f"Error in processing thread: {e}")
         finally:
             self.is_processing_sass = False
+
+    @pyqtSlot(str)
+    def on_caricature_generated(self, image_path):
+        self.log(f"Caricature saved at: {image_path}")
+        pixmap = QPixmap(image_path)
+        if not pixmap.isNull():
+            scaled = pixmap.scaled(self.caricature_label.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            self.caricature_label.setPixmap(scaled)
+        else:
+            self.caricature_label.setText("Failed to load image")
 
     @pyqtSlot(str, int)
     def on_sass_generated(self, text, sass_level):

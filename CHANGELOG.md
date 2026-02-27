@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.0] - 2026-02-27
+
+### Added
+- **Devotion Mode**: The Sass-O-Meter now goes into the negative (-100 to 0). Sliding left triggers "Devotion Mode" where SassyCam becomes a supportive AI admirer, offering soul-focused, environment-aware compliments.
+- **Gemini 3.1 Caricatures**: Native integration with the latest **Gemini 3.1 Flash Image (Nano Banana 2)**. SassyCam now generates a concurrent AI caricature drawing of the user that matches the current sass level and visual environment.
+- **Multimodal Image-to-Image**: Caricature generation now sends the actual camera frame to Gemini, ensuring high visual resemblance to the user's features and background.
+- **Dynamic UI Elements**:
+    - Added a dedicated portrait display area for caricatures.
+    - Added a pulsing progress bar for background image generation.
+    - Subtitles are now persistent and synced perfectly with the Text-to-Speech duration.
+    - New labels for negative sass: `SWEET`, `FANBOY`, and `DEVOTION`.
+- **Manual Generation**: Added a "Generate Caricature" button to the main control panel.
+
+### Changed
+- **Default Timer**: Auto-sass interval increased from 15s to 30s by default.
+- **Prompt Engineering**: Rewrote compliment prompts to focus on inner beauty, radiant souls, and kind eyes, while strictly incorporating visual details from the frame.
+- **Infrastructure**: Switched from crashing SDK dependencies to a stable, native REST API implementation for Gemini vision tasks.
+
+### Fixed
+- **PyTorch DLL Hell**: Fixed "WinError 1114" by isolating conflicting dependencies (OpenAI/Anthropic pydantic requirements) and repairing the Torch environment.
+- **Bypass Blocks**: Implemented robust request headers and random seeds to bypass Cloudflare 530/1033 errors on external image endpoints.
+
 ## [0.0.2] - 2026-02-19
 
 ### Added

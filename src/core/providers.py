@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 import google.generativeai as genai
-from openai import OpenAI
-from anthropic import Anthropic
 import io
 import PIL.Image
 
@@ -34,10 +32,17 @@ class GeminiProvider(LLMProvider):
 class OpenAIProvider(LLMProvider):
     def __init__(self, api_key, model_name="gpt-4o"):
         super().__init__(api_key)
-        self.client = OpenAI(api_key=api_key)
+        try:
+            from openai import OpenAI
+            self.client = OpenAI(api_key=api_key)
+        except Exception as e:
+            print(f"Failed to initialize OpenAI: {e}")
+            self.client = None
         self.model_name = model_name
 
     def generate_roast(self, image_bytes, user_text, system_prompt, language="English"):
+        if not self.client:
+            return "OpenAI client not initialized. Check dependencies (Pydantic v2 required)."
         try:
             import base64
             base64_image = base64.b64encode(image_bytes).decode('utf-8')
@@ -68,10 +73,17 @@ class OpenAIProvider(LLMProvider):
 class ClaudeProvider(LLMProvider):
     def __init__(self, api_key, model_name="claude-3-5-sonnet-20241022"):
         super().__init__(api_key)
-        self.client = Anthropic(api_key=api_key)
+        try:
+            from anthropic import Anthropic
+            self.client = Anthropic(api_key=api_key)
+        except Exception as e:
+            print(f"Failed to initialize Claude: {e}")
+            self.client = None
         self.model_name = model_name
 
     def generate_roast(self, image_bytes, user_text, system_prompt, language="English"):
+        if not self.client:
+            return "Claude client not initialized. Check dependencies."
         try:
             import base64
             base64_image = base64.b64encode(image_bytes).decode('utf-8')
