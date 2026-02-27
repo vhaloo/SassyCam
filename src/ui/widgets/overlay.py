@@ -18,81 +18,88 @@ class OverlayWidget(QLabel):
         shadow.setOffset(2, 2)
         self.setGraphicsEffect(shadow)
         
-        self.shake_timer = QTimer(self)
-        self.shake_timer.timeout.connect(self.shake_frame)
         self.base_pos = QPoint(0, 0)
-        self.intensity = 0
 
     def show_sass(self, text, sass_level=50):
         self.setText(text)
-        self.adjustSize()
         
-        # Dynamic Styling
-        if sass_level < 30:
-            # Pastel / Nice
-            color = "#A8E6CF" # Mint
-            font_family = "Comic Sans MS" # Friendly/Silly
-            font_size = "24px"
+        # Dynamic Styling based on Sass-O-Meter (-100 to 100)
+        if sass_level < -66:
+            # DEVOTION
+            color = "#FF69B4" # Hot Pink
+            font_family = "Brush Script MT" # Elegant/Poetic
+            font_size = "36px"
+            bg_alpha = 150
+            border = "2px solid #FF1493"
+        elif sass_level < -33:
+            # FANBOY
+            color = "#00BFFF" # Deep Sky Blue
+            font_family = "Trebuchet MS"
+            font_size = "32px"
+            bg_alpha = 120
             border = "none"
-            self.intensity = 0
+        elif sass_level < 0:
+            # SWEET
+            color = "#98FB98" # Pale Green
+            font_family = "Segoe UI"
+            font_size = "28px"
+            bg_alpha = 100
+            border = "none"
+        elif sass_level < 30:
+            # MILD (Passive Aggressive)
+            color = "#A8E6CF" # Mint
+            font_family = "Comic Sans MS"
+            font_size = "24px"
+            bg_alpha = 80
+            border = "none"
         elif sass_level < 60:
-            # Standard Sassy
+            # SASSY (Standard)
             color = "#FFD3B6" # Peach
             font_family = "Arial"
             font_size = "28px"
+            bg_alpha = 100
             border = "none"
-            self.intensity = 0
         elif sass_level < 90:
-            # Mean
-            color = "#FF8B94" # Pinkish Red
+            # RUTHLESS / SAVAGE
+            color = "#FF8B94" # Reddish
             font_family = "Verdana"
             font_size = "32px"
+            bg_alpha = 150
             border = "2px solid red"
-            self.intensity = 2
         else:
-            # Nuclear
+            # NUCLEAR / EMOTIONAL DAMAGE
             color = "#FF0000" # Pure Red
             font_family = "Impact"
             font_size = "48px"
+            bg_alpha = 200
             border = "5px solid white"
-            self.intensity = 10
 
         self.setStyleSheet(f"""
             color: {color};
-            font-family: '{font_family}';
+            font-family: '{font_family}', 'Segoe UI', sans-serif;
             font-size: {font_size};
             font-weight: bold;
-            background-color: rgba(0, 0, 0, 100);
-            padding: 10px;
-            border-radius: 10px;
+            background-color: rgba(0, 0, 0, {bg_alpha});
+            padding: 15px;
+            border-radius: 15px;
             border: {border};
         """)
         
-        # Centering logic (bottom area)
+        # Positioning logic (Bottom of Caricature Frame)
         if self.parent():
-            parent_rect = self.parent().rect()
-            w = min(parent_rect.width() - 40, 800)
-            self.setFixedWidth(w)
-            self.adjustSize() # Recalculate height
+            p_w = self.parent().width()
+            p_h = self.parent().height()
             
-            x = (parent_rect.width() - self.width()) // 2
-            y = parent_rect.height() - self.height() - 50
+            # Subtitle takes 90% of frame width
+            self.setFixedWidth(int(p_w * 0.9))
+            self.adjustSize()
+            
+            x = (p_w - self.width()) // 2
+            y = p_h - self.height() - 30 # Bottom margin within frame
             self.base_pos = QPoint(x, y)
             self.move(self.base_pos)
 
         self.show()
-        
-        # Trigger Shake if intense
-        if self.intensity > 0:
-            self.shake_timer.start(50)
-        else:
-            self.shake_timer.stop()
-
-    def shake_frame(self):
-        dx = random.randint(-self.intensity, self.intensity)
-        dy = random.randint(-self.intensity, self.intensity)
-        self.move(self.base_pos.x() + dx, self.base_pos.y() + dy)
 
     def hide_overlay(self):
-        self.shake_timer.stop()
         self.hide()

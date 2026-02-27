@@ -14,20 +14,56 @@ class LLMProvider(ABC):
 class GeminiProvider(LLMProvider):
     def __init__(self, api_key, model_name="gemini-1.5-flash"):
         super().__init__(api_key)
-        genai.configure(api_key=api_key)
         self.model_name = model_name
-        self.model = genai.GenerativeModel(model_name)
+        self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
 
     def generate_roast(self, image_bytes, user_text, system_prompt, language="English"):
+        import requests
+        import base64
+        import json
+        
         try:
-            image = PIL.Image.open(io.BytesIO(image_bytes))
-            # Gemini 1.5 allows system instructions in the constructor or generate call
-            # We'll prepend it to the prompt for safety across versions
-            full_prompt = [system_prompt, f"\nUser said: {user_text}", image]
-            response = self.model.generate_content(full_prompt)
-            return response.text
+            b64_image = base64.b64encode(image_bytes).decode('utf-8')
+            
+            payload = {
+                "contents": [
+                    {
+                        "parts": [
+                            {"text": system_prompt},
+                            {"text": f"\nUser said: {user_text}"},
+                            {
+                                "inlineData": {
+                                    "mimeType": "image/jpeg",
+                                    "data": b64_image
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "generationConfig": {
+                    "temperature": 0.9,
+                    "topK": 40,
+                    "topP": 0.95,
+                    "maxOutputTokens": 200,
+                }
+            }
+            
+            headers = {"Content-Type": "application/json"}
+            response = requests.post(self.api_url, json=payload, headers=headers, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "candidates" in data and len(data["candidates"]) > 0:
+                    content = data["candidates"][0].get("content", {})
+                    parts = content.get("parts", [])
+                    if parts:
+                        return parts[0].get("text", "...")
+                return "Gemini returned success but no text."
+            else:
+                return f"Gemini API Error ({response.status_code}): {response.text}"
+                
         except Exception as e:
-            return f"Gemini Error ({self.model_name}): {str(e)}"
+            return f"Gemini Connection Error: {str(e)}"
 
 class OpenAIProvider(LLMProvider):
     def __init__(self, api_key, model_name="gpt-4o"):

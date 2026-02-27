@@ -368,9 +368,8 @@ class MainWindow(QMainWindow):
         self.caricature_scroll.setWidget(self.caricature_container)
         self.main_layout.addWidget(self.caricature_scroll)
 
-        # Overlay (Subtitle) - Parented to main_image_label or video_label? 
-        # User wants subtitles during speech. Let's parent to main layout or central widget.
-        self.overlay = OverlayWidget(self.central_widget)
+        # Overlay (Subtitle) - Parented to main_image_label for bottom alignment
+        self.overlay = OverlayWidget(self.main_image_label)
         
         # Controls Area
         controls_layout = QHBoxLayout()
@@ -715,10 +714,10 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'last_caricature_path') and self.last_caricature_path:
             self.update_main_image(self.last_caricature_path)
             
-        # Reposition overlay
+        # Reposition overlay within main_image_label
         if hasattr(self, 'overlay') and self.overlay.isVisible():
-            # Center overlay relative to window bottom
-            self.overlay.setGeometry(0, self.height() - 150, self.width(), 100)
+            # Re-trigger styling and positioning logic
+            self.overlay.show_sass(self.overlay.text(), self.config.get("sass_level"))
             
         super().resizeEvent(event)
 
