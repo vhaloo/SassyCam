@@ -190,7 +190,7 @@ class SettingsDialog(QDialog):
 
 class MainWindow(QMainWindow):
     sass_generated = pyqtSignal(str, int) # Signal: Text, SassLevel
-    tts_status_changed = pyqtSignal(bool) # Signal: is_speaking
+    tts_status_changed = pyqtSignal(bool, str, int) # Signal: is_speaking, text, sass_level
     caricature_generated = pyqtSignal(str) # Signal: image_path
     processing_state_changed = pyqtSignal(bool) # Signal: is_processing
 
@@ -249,14 +249,16 @@ class MainWindow(QMainWindow):
         self.last_image_bytes = None
         self.start_systems()
 
-    def on_tts_status_change(self, is_speaking):
-        self.tts_status_changed.emit(is_speaking)
+    def on_tts_status_change(self, is_speaking, text="", sass_level=0):
+        self.tts_status_changed.emit(is_speaking, text, sass_level)
 
-    @pyqtSlot(bool)
-    def handle_tts_status(self, is_speaking):
+    @pyqtSlot(bool, str, int)
+    def handle_tts_status(self, is_speaking, text, sass_level):
         self.audio.set_muted(is_speaking)
         if is_speaking:
             self.statusBar().showMessage("Speaking...")
+            if hasattr(self, 'overlay'):
+                self.overlay.show_sass(text, sass_level)
         else:
             self.statusBar().showMessage("Ready.")
             if hasattr(self, 'overlay') and self.overlay.isVisible():
@@ -586,11 +588,9 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str, int)
     def on_sass_generated(self, text, sass_level):
-        self.overlay.show_sass(text, sass_level)
-        
         language = self.config.get("language")
         self.log("VERBOSE: Sending to TTS...")
-        self.tts.speak(text, self.config.get("voice_code"), language)
+        self.tts.speak(text, self.config.get("voice_code"), language, sass_level)
 
     def resizeEvent(self, event):
         # Reposition overlay if visible

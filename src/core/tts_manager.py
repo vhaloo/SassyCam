@@ -77,7 +77,7 @@ class TTSManager:
         "Spanish": {"code": "es", "default_voice": "ef_alpha"}
     }
 
-    def speak(self, text, voice="af_heart", language="English"):
+    def speak(self, text, voice="af_heart", language="English", sass_level=50):
         if not self.kokoro:
             print("TTS model not loaded yet.")
             return
@@ -94,16 +94,17 @@ class TTSManager:
         try:
             samples, sample_rate = self.kokoro.create(text, voice=voice, speed=1.0, lang=lang_code)
             if samples is not None:
-                self.audio_queue.put((samples, sample_rate))
+                self.audio_queue.put((samples, sample_rate, text, sass_level))
         except Exception as e:
             print(f"Error generating speech: {e}")
 
     def _audio_player_loop(self):
         while True:
-            samples, sample_rate = self.audio_queue.get()
+            samples, sample_rate, text, sass_level = self.audio_queue.get()
             self.is_playing = True
             if self.status_callback:
-                self.status_callback(True)
+                # Signal start with text and sass level
+                self.status_callback(True, text, sass_level)
             try:
                 sd.play(samples, sample_rate, device=self.output_device)
                 sd.wait()
@@ -112,7 +113,7 @@ class TTSManager:
             finally:
                 self.is_playing = False
                 if self.status_callback:
-                    self.status_callback(False)
+                    self.status_callback(False, "", 0)
                 self.audio_queue.task_done()
 
     def set_output_device(self, device_index):
