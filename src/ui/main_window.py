@@ -1,9 +1,11 @@
 import sys
 import threading
 import time
+import os
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QSlider, QTextEdit, 
-                             QDialog, QLineEdit, QFormLayout, QComboBox, QCheckBox, QProgressBar)
+                             QDialog, QLineEdit, QFormLayout, QComboBox, QCheckBox, 
+                             QProgressBar, QScrollArea)
 from PyQt6.QtGui import QPixmap, QImage, QIcon
 from PyQt6.QtCore import Qt, QTimer, pyqtSlot, pyqtSignal
 
@@ -188,6 +190,24 @@ class SettingsDialog(QDialog):
         # Refresh AI manager immediately
         self.main_window.ai.load_provider()
 
+class ClickableLabel(QLabel):
+    doubleClicked = pyqtSignal(str)
+    clicked = pyqtSignal(str)
+    
+    def __init__(self, image_path="", parent=None):
+        super().__init__(parent)
+        self.image_path = image_path
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        
+    def mouseDoubleClickEvent(self, event):
+        if self.image_path:
+            self.doubleClicked.emit(self.image_path)
+
+    def mousePressEvent(self, event):
+        if self.image_path and event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit(self.image_path)
+        super().mousePressEvent(event)
+
 class MainWindow(QMainWindow):
     sass_generated = pyqtSignal(str, int) # Signal: Text, SassLevel
     tts_status_changed = pyqtSignal(bool, str, int) # Signal: is_speaking, text, sass_level
@@ -206,9 +226,9 @@ class MainWindow(QMainWindow):
         self.splash = SplashWidget()
         self.splash.show()
         
-        self.setWindowTitle("SassyCam v0.0.3")
-        self.setMinimumSize(800, 600)
-        self.setGeometry(100, 100, 1000, 800)
+        self.setWindowTitle("SassyCam v0.1.0")
+        self.setMinimumSize(900, 700)
+        self.setGeometry(100, 100, 1200, 900)
         
         # Initialize Core Components
         self.config = ConfigManager()
@@ -247,7 +267,9 @@ class MainWindow(QMainWindow):
         self.is_processing_caricature = False
         self.last_sass_text = "Just relaxing in front of the camera."
         self.last_image_bytes = None
+        self.last_caricature_path = ""
         self.start_systems()
+        QTimer.singleShot(500, self.load_history) # Load history after systems start
 
     def on_tts_status_change(self, is_speaking, text="", sass_level=0):
         self.tts_status_changed.emit(is_speaking, text, sass_level)
@@ -296,49 +318,67 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(settings_btn)
         self.main_layout.addLayout(header_layout)
         
-        # Video Area
-        video_caricature_layout = QHBoxLayout()
+        # Central Horizontal Area (Camera + Main Image)
+        content_layout = QHBoxLayout()
+        
+        # Left: Camera Feed
         self.video_label = QLabel("Initializing Camera...")
         self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.video_label.setMinimumSize(640, 480)
+        self.video_label.setFixedSize(320, 240) # Smaller fixed size for camera now
         self.video_label.setStyleSheet("background-color: #000; border: 2px solid #333;")
-        video_caricature_layout.addWidget(self.video_label, 2)
+        content_layout.addWidget(self.video_label, 0, Qt.AlignmentFlag.AlignTop)
 
-        # Caricature Area
-        caricature_layout = QVBoxLayout()
-        self.caricature_label = QLabel("Waiting for next Roast/Compliment...")
-        self.caricature_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.caricature_label.setMinimumSize(256, 256)
-        self.caricature_label.setStyleSheet("background-color: #111; border: 2px solid #555;")
-        caricature_layout.addWidget(self.caricature_label)
+        # Center: Large Adaptive Image View
+        self.main_image_label = ClickableLabel()
+        self.main_image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.main_image_label.setText("Your Caricature Will Appear Here")
+        self.main_image_label.setStyleSheet("background-color: #111; border: 2px solid #555; font-size: 18px; color: #888;")
+        self.main_image_label.doubleClicked.connect(self.open_image_externally)
+        content_layout.addWidget(self.main_image_label, 1)
         
+        self.main_layout.addLayout(content_layout, 1)
+
+        # Progress Bar (Between main view and gallery)
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
         self.progress_bar.setTextVisible(False)
+        self.progress_bar.setFixedHeight(4)
         self.progress_bar.hide()
-        caricature_layout.addWidget(self.progress_bar)
-        
-        video_caricature_layout.addLayout(caricature_layout, 1)
-        self.main_layout.addLayout(video_caricature_layout, 1)
+        self.main_layout.addWidget(self.progress_bar)
 
-        # Overlay (Subtitle) - Parented to Video Label
-        self.overlay = OverlayWidget(self.video_label)
+        # History Gallery (Scroll Area)
+        self.history_label = QLabel("History")
+        self.history_label.setStyleSheet("font-weight: bold; color: #aaa; margin-top: 10px;")
+        self.main_layout.addWidget(self.history_label)
+
+        self.caricature_scroll = QScrollArea()
+        self.caricature_scroll.setWidgetResizable(True)
+        self.caricature_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.caricature_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.caricature_scroll.setFixedHeight(120)
+        self.caricature_scroll.setStyleSheet("background-color: #0a0a0a; border: none;")
+        
+        self.caricature_container = QWidget()
+        self.caricature_gallery_layout = QHBoxLayout(self.caricature_container)
+        self.caricature_gallery_layout.setContentsMargins(5, 5, 5, 5)
+        self.caricature_gallery_layout.setSpacing(10)
+        self.caricature_gallery_layout.addStretch() 
+        
+        self.caricature_scroll.setWidget(self.caricature_container)
+        self.main_layout.addWidget(self.caricature_scroll)
+
+        # Overlay (Subtitle) - Parented to main_image_label or video_label? 
+        # User wants subtitles during speech. Let's parent to main layout or central widget.
+        self.overlay = OverlayWidget(self.central_widget)
         
         # Controls Area
         controls_layout = QHBoxLayout()
         
         # Sass Meter
-        sass_layout = QVBoxLayout()
-        # sass_label = QLabel("Sass-O-Meter") # Integrated into widget now
-        # sass_label.setObjectName("SassLabel")
-        
         self.sass_slider = SassMeter(initial_value=self.config.get("sass_level"))
         self.sass_slider.valueChanged.connect(self.update_sass_level)
-        
-        # sass_layout.addWidget(sass_label)
-        sass_layout.addWidget(self.sass_slider)
-        controls_layout.addLayout(sass_layout)
+        controls_layout.addWidget(self.sass_slider, 1)
         
         # Manual Trigger
         self.roast_btn = QPushButton("Roast Me Now")
@@ -349,13 +389,18 @@ class MainWindow(QMainWindow):
         self.caricature_btn = QPushButton("Generate Caricature")
         self.caricature_btn.clicked.connect(self.trigger_caricature)
         controls_layout.addWidget(self.caricature_btn)
+
+        # Open Folder
+        self.folder_btn = QPushButton("Open Folder")
+        self.folder_btn.clicked.connect(self.open_caricature_folder)
+        controls_layout.addWidget(self.folder_btn)
         
         self.main_layout.addLayout(controls_layout)
         
-        # Log Area
+        # Log Area (Minimized)
         self.log_area = QTextEdit()
         self.log_area.setReadOnly(True)
-        self.log_area.setMaximumHeight(150)
+        self.log_area.setMaximumHeight(60)
         self.main_layout.addWidget(self.log_area)
         
         # Apply Styles
@@ -579,12 +624,85 @@ class MainWindow(QMainWindow):
     @pyqtSlot(str)
     def on_caricature_generated(self, image_path):
         self.log(f"Caricature saved at: {image_path}")
+        self.last_caricature_path = image_path
+        self.update_main_image(image_path)
+        self._add_to_gallery(image_path)
+
+    def _add_to_gallery(self, image_path):
+        # Add thumbnail to horizontal gallery
         pixmap = QPixmap(image_path)
         if not pixmap.isNull():
-            scaled = pixmap.scaled(self.caricature_label.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-            self.caricature_label.setPixmap(scaled)
-        else:
-            self.caricature_label.setText("Failed to load image")
+            thumb_label = ClickableLabel(image_path)
+            thumb_label.setFixedSize(100, 100)
+            scaled = pixmap.scaled(thumb_label.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            thumb_label.setPixmap(scaled)
+            thumb_label.setStyleSheet("border: 1px solid #444; background-color: #000;")
+            thumb_label.doubleClicked.connect(self.open_image_externally)
+            thumb_label.clicked.connect(self.on_gallery_item_clicked)
+            
+            # Insert at front (after stretch if we had one, but we use insertWidget(0))
+            self.caricature_gallery_layout.insertWidget(0, thumb_label)
+            self.caricature_scroll.horizontalScrollBar().setValue(0)
+
+    def on_gallery_item_clicked(self, image_path):
+        self.log(f"Selected image from gallery: {image_path}")
+        self.last_caricature_path = image_path
+        self.update_main_image(image_path)
+
+    def load_history(self):
+        import glob
+        path = os.path.join(os.path.expanduser("~"), "nanobanana-output")
+        if not os.path.exists(path):
+            return
+            
+        # Get all images, sorted by creation time
+        files = glob.glob(os.path.join(path, "caricature_*.png"))
+        files.sort(key=os.path.getctime) # Oldest to newest
+        
+        for f in files:
+            self._add_to_gallery(f)
+            
+        if files:
+            self.last_caricature_path = files[-1]
+            self.update_main_image(self.last_caricature_path)
+
+    def update_main_image(self, image_path):
+        pixmap = QPixmap(image_path)
+        if not pixmap.isNull():
+            self.main_image_label.image_path = image_path
+            # Adapt to viewport size
+            scaled = pixmap.scaled(self.main_image_label.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            self.main_image_label.setPixmap(scaled)
+
+    def open_image_externally(self, image_path):
+        import subprocess
+        import platform
+        try:
+            if platform.system() == "Windows":
+                os.startfile(image_path)
+            elif platform.system() == "Darwin":
+                subprocess.Popen(["open", image_path])
+            else:
+                subprocess.Popen(["xdg-open", image_path])
+        except Exception as e:
+            self.log(f"Error opening image: {e}")
+
+    def open_caricature_folder(self):
+        import subprocess
+        import platform
+        path = os.path.join(os.path.expanduser("~"), "nanobanana-output")
+        if not os.path.exists(path):
+            os.makedirs(path)
+            
+        try:
+            if platform.system() == "Windows":
+                os.startfile(path)
+            elif platform.system() == "Darwin":
+                subprocess.Popen(["open", path])
+            else:
+                subprocess.Popen(["xdg-open", path])
+        except Exception as e:
+            self.log(f"Error opening folder: {e}")
 
     @pyqtSlot(str, int)
     def on_sass_generated(self, text, sass_level):
@@ -593,10 +711,15 @@ class MainWindow(QMainWindow):
         self.tts.speak(text, self.config.get("voice_code"), language, sass_level)
 
     def resizeEvent(self, event):
-        # Reposition overlay if visible
+        # Update main image scale on resize
+        if hasattr(self, 'last_caricature_path') and self.last_caricature_path:
+            self.update_main_image(self.last_caricature_path)
+            
+        # Reposition overlay
         if hasattr(self, 'overlay') and self.overlay.isVisible():
-            # Trigger show_sass with current text to re-center
-            self.overlay.show_sass(self.overlay.text(), self.config.get("sass_level"))
+            # Center overlay relative to window bottom
+            self.overlay.setGeometry(0, self.height() - 150, self.width(), 100)
+            
         super().resizeEvent(event)
 
     def closeEvent(self, event):
