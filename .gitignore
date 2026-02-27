@@ -38,6 +38,7 @@ SassyCam_v0.0.1_Multilingual.zip
 
 # Assets (Models downloaded at runtime)
 assets/
+!assets/screenshots/
 
 # Local configuration
 config.json

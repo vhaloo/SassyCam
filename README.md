@@ -1,8 +1,8 @@
-# 📸 SassyCam v0.0.5
+# 📸 SassyCam v0.1.0
 
-**The AI Webcam that roasts you—with love (mostly).**
+**The AI Webcam that roasts you—or adores you.**
 
-> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic. Powered by Gemini 2.5 Flash, GPT-5, and Claude. Features dynamic audio-reactive UI, multilingual voice synthesis, and an "Emotional Damage" mode for extreme roasting.
+> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic or an obsessive admirer. Powered by Gemini 3.1 Flash (Nano Banana 2), GPT-5, and Claude. Features multimodal image-to-image caricatures, dynamic audio-reactive UI, and persistent localized subtitles.
 
 [![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
@@ -13,26 +13,29 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 
 ---
 
-## ✨ New in v0.0.5 (Hotfix Update)
+## 🖼️ Screenshots
 
-### 🐛 Critical Fixes
-- Fixed a startup crash affecting v0.0.4.
-- All **Emotional Damage** features from v0.0.4 are included.
+| Devotion Mode (-100) | Nuclear Roast (+100) |
+| :---: | :---: |
+| ![Devotion Mode](assets/screenshots/sassycam_devotion.png) | ![Roast Mode](assets/screenshots/sassycam_roast.png) |
 
-### 💔 Emotional Damage Mode (95%+)
-We've raised the ceiling. If you crank the Sass-O-Meter past 95%, SassyCam enters **Emotional Damage** mode.
-- **Longer Roasts:** The AI will now deliver extended monologues (up to 120 words) deconstructing your choices.
-- **Zero Mercy:** Positivity is disabled. It's just you and the hard truth.
+---
 
-### 🧠 Stable 2026 Models
-- Defaulted to **Google Gemini 2.5 Flash** for maximum stability and speed on Windows.
-- Verified compatibility with GPT-5.1 Chat and Claude Sonnet 4.6.
+## ✨ New in v0.1.0 (The Devotion & Vision Update)
 
-### 📜 Dynamic Roast Length
-- **Low Sass:** Short & Punchy (20 words).
-- **Med Sass:** Explained judgment (40 words).
-- **High Sass:** Detailed critique (70 words).
-- **Emotional Damage:** Full rant (100+ words).
+### 💖 Devotion Mode (-100 to 0)
+We've added a positive scale to the Sass-O-Meter. Sliding left triggers **Devotion Mode**.
+- **Supportive AI:** SassyCam becomes your biggest fan, focusing on your inner beauty and radiant soul.
+- **Environment Aware:** Compliments are woven into specific visual details like your clothing, lighting, and decor.
+
+### 🎨 Gemini 3.1 Multimodal Caricatures
+Native integration with the brand new **Nano Banana 2 (Gemini 3.1 Flash Image)**.
+- **Image-to-Image:** SassyCam sends your actual camera frame to the AI to ensure the caricature matches your features and environment perfectly.
+- **Dynamic Styles:** Generates varied art styles (Pencil, Watercolor, Charcoal, Digital) depending on the Sass Level.
+
+### 🔊 Perfect Sync Subtitles
+- **Hardware-Locked Timing:** Subtitles now appear and disappear in perfect sync with the audio hardware callback.
+- **Persistent Text:** Subtitles stay on screen for the exact duration of the speech.
 
 ---
 
@@ -40,12 +43,12 @@ We've raised the ceiling. If you crank the Sass-O-Meter past 95%, SassyCam enter
 
 ### 🟢 Windows (Installer)
 
-1. **Download:** Grab the [latest SassyCam_Windows_v0.0.5.zip](https://github.com/vhaloo/SassyCam/releases/latest).
+1. **Download:** Grab the [latest SassyCam_Windows_v0.1.0.zip](https://github.com/vhaloo/SassyCam/releases/latest).
 2. **Extract:** Unzip the folder.
 3. **Run:** Double-click **`Launch_SassyCam.bat`**.
 4. **Setup:** 
-   - Default Sass Level is now **10%** (Mild).
-   - Go to **Settings** to crank it up if you dare.
+   - Sass-O-Meter now ranges from **-100 (Devotion)** to **100 (Nuclear)**.
+   - Go to **Settings** to provide your Gemini API key for vision features.
 
 ### 🟠 macOS / Linux (Source)
 
@@ -70,14 +73,17 @@ We've raised the ceiling. If you crank the Sass-O-Meter past 95%, SassyCam enter
 ## 🛠️ Configuration
 
 ### Authentication Options
-1. **API Key (Recommended):** Enter your official key for Gemini, OpenAI, or Anthropic. This supports **Vision** (the AI can see you).
-2. **Web Login / Proxy:** Select "Pollinations" to use the models for free. (Note: Vision capabilities may be limited).
+1. **API Key (Recommended):** Enter your official key for Gemini (Imagen 3 / Nano Banana 2), OpenAI, or Anthropic.
+2. **Vision Support:** Requires a Gemini API key for the multimodal caricature generation.
 
 ### Sass-O-Meter
-- **0-30%:** Friendly, helpful, "Grandma mode".
-- **31-70%:** Standard SassyCam. Roast with love.
-- **71-94%:** Mean.
-- **95-100%:** **EMOTIONAL DAMAGE.** The text shakes. The roast never ends.
+- **-100 to -67:** **DEVOTION.** Poetic odes to your soul.
+- **-66 to -34:** **FANBOY.** Enthusiastic hype-man.
+- **-33 to -1:** **SWEET.** Mild support.
+- **0 to 30%:** **MILD.** Passive-aggressive.
+- **31-70%:** **SASSY.** Standard roast.
+- **71-94%:** **SAVAGE.** Mean.
+- **95-100%:** **EMOTIONAL DAMAGE.** Absolute destruction.
 
 ---
 
