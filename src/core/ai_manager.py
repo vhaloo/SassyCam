@@ -29,7 +29,7 @@ class AIManager:
 
         if self.provider == "Gemini":
             # Default to latest 2026 flash model for roasting
-            model = self.config.get("gemini_model", "gemini-3.1-flash-preview")
+            model = self.config.get("gemini_model", "gemini-3.1-flash-image-preview")
             self.current_llm = GeminiProvider(key, model_name=model)
         elif self.provider == "OpenAI":
             # Default to latest 2026 models

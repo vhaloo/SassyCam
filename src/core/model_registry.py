@@ -14,7 +14,7 @@ class ModelRegistry:
 
     MODELS = {
         "Gemini": [
-            ModelInfo("gemini-3.1-flash-preview", "Gemini 3.1 Flash (Latest)"),
+            ModelInfo("gemini-3.1-flash-image-preview", "Gemini 3.1 Flash (Latest)"),
             ModelInfo("gemini-3.1-pro-preview", "Gemini 3.1 Pro (Preview)"),
             ModelInfo("gemini-3-flash-preview", "Gemini 3 Flash (Preview)"),
             ModelInfo("gemini-2.5-pro", "Gemini 2.5 Pro (Stable)"),
