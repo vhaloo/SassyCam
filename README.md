@@ -17,7 +17,7 @@ SassyCam is a sentient desktop companion that turns your webcam into a judgmenta
 
 | Devotion Mode (-100) | Nuclear Roast (+100) |
 | :---: | :---: |
-| ![Devotion Mode](assets/screenshots/sassycam_devotion.png) | ![Roast Mode](assets/screenshots/sassycam_roast.png) |
+| ![Devotion Mode](assets/screenshots/devotion_fixed.png) | ![Roast Mode](assets/screenshots/roast_fixed.png) |
 
 ---
 
