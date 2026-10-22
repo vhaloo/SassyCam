@@ -1,10 +1,11 @@
 name: SassyCam 1.0 - verify and package
 on:
   push:
-    branches: [master, 'codex/sassycam-1.0']
+    branches: [master]
     tags: ['v*']
   pull_request:
     branches: [master]
+    paths-ignore: ['docs/**', 'README.md', 'CHANGELOG.md', 'SECURITY.md']
   workflow_dispatch:
 permissions:
   contents: read

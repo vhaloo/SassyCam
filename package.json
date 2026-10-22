@@ -53,7 +53,9 @@
       "dist/**",
       "desktop/**",
       "server/**",
-      "package.json"
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md"
     ],
     "extraResources": [
       {

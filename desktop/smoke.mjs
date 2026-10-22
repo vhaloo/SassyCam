@@ -6,7 +6,7 @@ const output =
   process.env.SASSYCAM_QA_DIR ||
   path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".qa");
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
-export async function runSmoke(win, app) {
+export async function runSmoke(win, app, closeService) {
   await mkdir(output, { recursive: true });
   const report = {
     date: new Date().toISOString(),
@@ -222,14 +222,26 @@ export async function runSmoke(win, app) {
       await evaluate(
         `(()=>{const e=[...document.querySelectorAll('.settings-content select')][0];const set=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set;set.call(e,'browser');e.dispatchEvent(new Event('change',{bubbles:true}));})()`,
       );
+      if(process.env.SASSYCAM_CPU_SMOKE==='1'){await evaluate(`(()=>{const e=[...document.querySelectorAll('.local-ai-panel select')].find(s=>[...s.options].some(o=>o.value==='wasm'));Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(e,'wasm');e.dispatchEvent(new Event('change',{bubbles:true}));})()`);}
+      await evaluate(`document.querySelector('.toast button')?.click()`);
+      await pause(150);
       await clickText("Activer l’IA gratuite");
       await waitFor(
-        `document.querySelector('.local-ai-panel .primary-button')?.textContent.includes('Modèle prêt')`,
+        `(()=>{const error=document.querySelector('.toast.error');if(error?.textContent.includes('Chargement du modèle local impossible'))throw Error(error.textContent);return document.querySelector('.local-ai-panel .primary-button')?.textContent.includes('Modèle prêt');})()`,
         240000,
       );
       check("real browser AI model loads", true);
       await evaluate(`document.querySelector('.sidebar nav button').click()`);
       await clickText("Adore-moi");
+      const responsiveStart = Date.now();
+      await evaluate(
+        `({busy:document.querySelector('.primary-actions .primary-button').disabled,cancelAvailable:!!document.querySelector('.progress-line button')})`,
+      );
+      check(
+        "UI stays responsive during real local inference",
+        Date.now() - responsiveStart < 3000,
+        { elapsedMs: Date.now() - responsiveStart },
+      );
       await waitFor(
         `!document.querySelector('.primary-actions .primary-button').disabled`,
         180000,
@@ -245,6 +257,36 @@ export async function runSmoke(win, app) {
         local,
       );
       report.localInference = local;
+      const appRoot = path.resolve(
+        path.dirname(fileURLToPath(import.meta.url)),
+        "..",
+      );
+      const localChunk = (
+        await readdir(path.join(appRoot, "dist", "assets"))
+      ).find((name) => /^local-ai-.+\.js$/.test(name));
+      const typed = await evaluate(
+        `(async()=>{const {localReply}=await import('/assets/'+${JSON.stringify(localChunk)});return localReply(undefined,'Je prépare mon grand retour au studio.',-35,'fr',new AbortController().signal);})()`,
+      );
+      check(
+        "local typed-only reply completes without claiming vision",
+        !!typed.text && typed.vision === false,
+        {
+          text: typed.text,
+          model: typed.model,
+          device: typed.device,
+          vision: typed.vision,
+        },
+      );
+      report.textOnlyInference = typed;
+      await clickText("Adore-moi");
+      await evaluate(
+        `document.querySelector('.progress-line button')?.click()`,
+      );
+      await waitFor(
+        `!document.querySelector('.primary-actions .primary-button').disabled`,
+        5000,
+      );
+      check("local inference cancellation returns control promptly", true);
     }
     if (process.env.SASSYCAM_VOICE_SMOKE === "1") {
       const appRoot = path.resolve(
@@ -290,6 +332,24 @@ export async function runSmoke(win, app) {
       JSON.stringify(report, null, 2),
     );
     console.log(JSON.stringify(report, null, 2));
+    // A failed browser/native session can leave executeJavaScript unresolved.
+    // Test teardown must remain bounded even after that renderer failure.
+    setTimeout(() => process.exit(report.passed ? 0 : 1), 5000);
+    try {
+      const appRoot = path.resolve(
+        path.dirname(fileURLToPath(import.meta.url)),
+        "..",
+      );
+      const chunk = (await readdir(path.join(appRoot, "dist", "assets"))).find(
+        (name) => /^local-ai-.+\.js$/.test(name),
+      );
+      if (chunk)
+        await evaluate(
+          `import('/assets/'+${JSON.stringify(chunk)}).then(m=>m.disposeLocalAI())`,
+        );
+    } catch {}
+    setTimeout(() => process.exit(report.passed ? 0 : 1), 1000);
+    await closeService?.();
     app.exit(report.passed ? 0 : 1);
   }
 }

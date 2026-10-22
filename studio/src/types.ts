@@ -57,7 +57,7 @@ export interface Preferences {
   rosTopic: string;
   whisperModel: string;
   dark: boolean;
-  device: "wasm" | "webgpu";
+  device: "auto" | "wasm" | "webgpu";
 }
 export interface Entry {
   id: string;
@@ -95,7 +95,7 @@ export const DEFAULT_PREFS: Preferences = {
   provider: "browser",
   imageProvider: "local",
   models: {
-    browser: "HuggingFaceTB/SmolVLM-256M-Instruct",
+    browser: "onnx-community/Qwen3.5-0.8B-ONNX",
     openai: "gpt-6.1-sol",
     gemini: "gemini-3.5-flash",
     anthropic: "claude-sonnet-4-6",
@@ -133,5 +133,5 @@ export const DEFAULT_PREFS: Preferences = {
   rosTopic: "/sassy_cam/roast",
   whisperModel: "tiny",
   dark: false,
-  device: "wasm",
+  device: "auto",
 };

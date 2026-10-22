@@ -5,14 +5,14 @@ Indicative total: 2 h 15 min–4 h 25 min. Estimates are not measured effort or 
 
 - [x] Audit original features and defects (10–15 min).
 - [x] Verify Sites identity and official personal-plan inference contracts (5–10 min).
-- [ ] Implement shared studio, camera selection, framing, upload and capture (20–35 min).
-- [ ] Implement mood controls, typed replies, voice, subtitles, automatic sessions (20–35 min).
-- [ ] Implement provider adapters and genuinely local free inference (20–35 min).
-- [ ] Implement independent image generation, local illustrations and gallery (20–35 min).
-- [ ] Secure desktop credentials and personal ChatGPT OAuth (20–35 min).
-- [ ] Package Windows, macOS and Linux; retain optional legacy integrations (15–25 min).
-- [ ] Integrate Sites authentication and deploy owner-private review version (15–30 min).
-- [ ] Run provider, auth, storage, lifecycle, build and UI checks (20–40 min).
+- [x] Implement shared studio, camera selection, framing, upload and capture (20–35 min).
+- [x] Implement mood controls, typed replies, voice, subtitles, automatic sessions (20–35 min).
+- [x] Implement provider adapters and genuinely local free inference (20–35 min).
+- [x] Implement independent image generation, local illustrations and gallery (20–35 min).
+- [x] Secure desktop credentials and personal ChatGPT OAuth (20–35 min).
+- [x] Package Windows, macOS and Linux; retain optional legacy integrations (15–25 min).
+- [x] Integrate Sites authentication and deploy owner-private review version (15–30 min).
+- [x] Run provider, auth, storage, lifecycle, build and UI checks (20–40 min).
 - [ ] Deliver source PR, binaries, parity matrix and honest verification report (10–20 min).
 
 ## Confirmed platform constraints
@@ -25,3 +25,4 @@ Sources checked on 2026-10-21:
 - https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference
 - https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations
 - https://learn.chatgpt.com/docs/sites?surface=app
+

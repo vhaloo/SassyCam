@@ -12,7 +12,7 @@ Implemented does not mean every physical device or provider has been exercised. 
 | Typed reply | Keyboard input and Ctrl/Cmd+Enter | Same |
 | Automatic reaction | 15–300 seconds; paused when hidden, inactive or busy | Same |
 | Model/provider choice | Ollama, ChatGPT plan, OpenAI, Gemini, Claude, compatible endpoint, Pollinations | Browser AI, visitor's OpenAI/Gemini/Claude/Pollinations API |
-| Free option | Ollama vision; local browser model also available | Small browser model, downloaded with explicit activation |
+| Free option | Qwen 3.5 browser worker on compatible GPU; English SmolVLM on CPU; configurable Ollama | Same local worker; explicit download and automatic GPU/CPU choice |
 | Actual generated portraits | Reference-based OpenAI/Gemini; local ComfyUI; compatible image API | Visitor's OpenAI/Gemini image API |
 | Free photo art | Explicitly labelled local illustration, not generative AI | Same |
 | Gallery and history | IndexedDB, isolated per profile, stable origin across restarts | IndexedDB, isolated per signed-in visitor on each browser |

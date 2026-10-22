@@ -5,8 +5,9 @@ process.stdin.setEncoding("utf8");
 console.log("Ready for private Site service check JSON on hidden stdin.");
 let input = "";
 process.stdin.on("data", async (chunk) => {
+  if (chunk.includes("\u0003")) process.exit(130);
   input += chunk;
-  if (!input.includes("\n")) return;
+  if (!/[\r\n]/.test(input)) return;
   process.stdin.pause();
   try {
     const { url, token } = JSON.parse(input.trim());
@@ -14,15 +15,18 @@ process.stdin.on("data", async (chunk) => {
     if (u.origin !== "https://sassycam-studio.vhaloo.chatgpt.site")
       throw new Error("Unexpected Site origin.");
     const headers = { "OAI-Sites-Authorization": "Bearer " + token };
-    const page = await fetch(u, { headers, redirect: "error" });
+    const signal = AbortSignal.timeout(15000);
+    const page = await fetch(u, { headers, redirect: "error", signal });
     const html = await page.text();
     const response = await fetch(new URL("/api/status", u), {
       headers,
       redirect: "error",
+      signal,
     });
     const state = await response.json();
     const mutation = await fetch(new URL("/api/reply", u), {
       method: "POST",
+      signal,
       headers: {
         ...headers,
         origin: u.origin,

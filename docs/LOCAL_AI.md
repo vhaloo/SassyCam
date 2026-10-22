@@ -12,9 +12,11 @@ ollama pull gemma3:4b-it-q4_K_M
 
 This example downloads about 3.4 GB. In Settings → Intelligence artificielle → Ollama, refresh the list and choose an installed vision model. CPU inference is possible but slower; performance depends on available RAM and GPU. One captured frame is sent per reaction, not a continuous webcam stream. Text-only models can answer typed words but cannot analyze photos. Older servers can reject current model formats; update Ollama if it requests an upgrade. The tested free default is the browser model, which does not require Ollama.
 
-## Browser: SmolVLM
+## Browser: Qwen 3.5 and lightweight fallback
 
-Choose IA du navigateur and click Activer l’IA gratuite. SmolVLM 256M is an Apache-2.0 Hugging Face model, pinned to revision `7e3e67edbbed1bf9888184d9df282b700a323964`. Its quantized ONNX weights download only after that click and are cached by the browser. The version-pinned ONNX runtime is downloaded from jsDelivr and cached as well. Inference stays on the visitor's device. It is a small English-trained model: French fluency, accuracy and wit are limited. CPU/WASM is the compatibility default; WebGPU is optional. Modern browsers and sufficient memory are required.
+Choose IA du navigateur and click Activer l’IA gratuite. The default is Apache-2.0 Qwen 3.5 0.8B, pinned to `8fe9dbe3fb39fe902e18df9be84b6a0ac77ae0f6`; its first download is approximately 900 MB, including the selected quantized language weights, vision encoder and runtime. SmolVLM 256M remains an English-trained lightweight fallback, pinned to `7e3e67edbbed1bf9888184d9df282b700a323964`. Downloading requires explicit activation. Weights and the version-pinned jsDelivr ONNX runtime are cached by the browser.
+
+Image preprocessing, language generation and Whisper run in a dedicated worker. Auto acceleration uses compatible WebGPU. CPU selects SmolVLM automatically because the current browser WASM runtime lacks a quantized kernel required by Qwen. SmolVLM replies in English, including when another response language is selected; this limitation is disclosed before activation. Use Qwen on a compatible GPU or a personal provider for multilingual replies. Cancel terminates the worker immediately, and hiding the page releases its model resources. Modern browsers and sufficient memory are required. These small models have variable fluency, visual accuracy and humor quality; they are not equivalent to a large paid/cloud model.
 
 ## Images
 

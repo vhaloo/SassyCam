@@ -376,6 +376,7 @@ export async function startLocal({
       new Promise((resolve) => {
         for (const a of auths.values()) a.cancel();
         server.close(resolve);
+        server.closeAllConnections();
       }),
     server,
   };

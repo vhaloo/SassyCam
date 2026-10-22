@@ -20,7 +20,7 @@ La caméra et le micro sont ouverts à votre demande. Le studio envoie une photo
 
 | Usage | Gratuit sur votre appareil | Avec votre propre compte |
 |---|---|---|
-| Conversation et vision | Ollama sur bureau ; SmolVLM dans le navigateur | ChatGPT personnel sur bureau, OpenAI API, Gemini, Claude, API compatible, Pollinations |
+| Conversation et vision | Qwen 3.5 local, option légère SmolVLM ; Ollama configurable sur bureau | ChatGPT personnel sur bureau, OpenAI API, Gemini, Claude, API compatible, Pollinations |
 | Portraits | Illustration photo locale ; ComfyUI avec un modèle installé | OpenAI Images, Gemini Images, API images compatible sur bureau |
 | Voix | Whisper local, voix du système ; Kokoro facultatif | Reconnaissance native du navigateur, selon sa disponibilité |
 
@@ -50,7 +50,7 @@ npm run desktop
 
 Sur une branche de revue, récupérez cette branche avant `npm ci`. Les scripts `install_windows.bat` et `install_mac_linux.sh` exécutent les mêmes étapes. Aucun Python, Torch, FFmpeg ou modèle IA n’est chargé au démarrage du studio moderne.
 
-L’option gratuite par défaut est l’IA du navigateur : cliquez sur **Activer l’IA gratuite** pour télécharger SmolVLM, sur bureau comme sur le Site. Ce petit modèle est surtout entraîné en anglais ; ses réponses en français et sa finesse sont limitées. Les performances varient selon l’appareil. Pour une IA locale plus puissante, installez une version actuelle d’[Ollama](https://ollama.com/download), un modèle de vision compatible, puis actualisez les modèles dans les réglages.
+L’option gratuite par défaut est **Qwen 3.5 0.8B**, sur bureau comme sur le Site : **Activer l’IA gratuite** télécharge environ 900 Mo de modèles et de runtime. Le calcul se fait dans un worker, avec accélération GPU si elle est compatible. Sur CPU, le studio choisit automatiquement SmolVLM, plus léger et limité à des réponses en anglais. Ces petits modèles ont une qualité variable ; ils ne remplacent pas un grand modèle cloud. Pour une IA locale plus puissante, utilisez une version actuelle d’[Ollama](https://ollama.com/download) et un modèle de vision adapté à votre appareil.
 
 ## Version web et hébergement ChatGPT
 

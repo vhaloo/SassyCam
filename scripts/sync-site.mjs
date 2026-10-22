@@ -20,6 +20,7 @@ await cp(
   path.join(root, "studio", "public", "favicon.svg"),
   path.join(dest, "public", "favicon.svg"),
 );
+await cp(path.join(root,'studio','public','third-party-licenses.txt'),path.join(dest,'public','third-party-licenses.txt'));
 const manifestPath = path.join(dest, "package.json"),
   pkg = JSON.parse(await readFile(manifestPath, "utf8"));
 Object.assign(pkg.dependencies, {
@@ -30,8 +31,24 @@ Object.assign(pkg.dependencies, {
 pkg.name = "sassycam-site";
 pkg.version = "1.0.0";
 pkg.scripts.build = "node scripts/build-hosted.mjs";
-await cp(path.join(root,"scripts","build-hosted.mjs"),path.join(dest,"scripts","build-hosted.mjs"));
+await cp(
+  path.join(root, "scripts", "build-hosted.mjs"),
+  path.join(dest, "scripts", "build-hosted.mjs"),
+);
 await writeFile(manifestPath, JSON.stringify(pkg, null, 2) + "\n");
+const vitePath = path.join(dest, "vite.config.ts");
+let vite = await readFile(vitePath, "utf8");
+if (!vite.includes("sassycam-worker-format")) {
+  if (!vite.includes("return {"))
+    throw new Error(
+      "Inspect the starter Vite configuration before adding worker format.",
+    );
+  vite = vite.replace(
+    "return {",
+    'return {\n    // sassycam-worker-format: local models run outside the UI thread.\n    worker: { format: "es" },',
+  );
+  await writeFile(vitePath, vite);
+}
 await mkdir(path.join(dest, "app", "api", "[...path]"), { recursive: true });
 await writeFile(
   path.join(dest, "app", "page.tsx"),

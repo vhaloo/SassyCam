@@ -211,6 +211,7 @@ export default function App() {
     ),
     [modelsBusy, setModelsBusy] = useState(false);
   const [localReady, setLocalReady] = useState(false),
+    [localRuntime, setLocalRuntime] = useState(""),
     [localLoading, setLocalLoading] = useState(false),
     [speaking, setSpeaking] = useState(false),
     [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -331,6 +332,7 @@ export default function App() {
   }
   function stopVoice() {
     voiceSequence.current++;
+    void import("./local-ai").then((m) => m.cancelLocalTranscription());
     recognizer.current?.abort();
     recognizer.current = null;
     if (recorder.current?.state === "recording") recorder.current.stop();
@@ -342,6 +344,8 @@ export default function App() {
   }
   function cancel() {
     controller.current?.abort();
+    void import("./local-ai").then((m) => m.disposeLocalAI());
+    setLocalReady(false);
     stopSpeech();
     stopVoice();
     setP({ auto: false });
@@ -356,6 +360,8 @@ export default function App() {
     const hidden = () => {
       if (document.hidden) {
         controller.current?.abort();
+        void import("./local-ai").then((m) => m.disposeLocalAI());
+        setLocalReady(false);
         camera.stop();
         stopVoice();
         stopSpeech();
@@ -934,13 +940,17 @@ export default function App() {
     setLocalLoading(true);
     try {
       const { loadLocalAI } = await import("./local-ai");
-      await loadLocalAI(setProgress, p.device);
+      const engine = await loadLocalAI(setProgress, p.device, p.models.browser);
+      setLocalRuntime(engine?.model?.includes("SmolVLM")
+        ? `SmolVLM · modèle léger · ${engine.device === "wasm" ? "CPU" : "GPU"} · réponses en anglais`
+        : "Qwen 3.5 · multilingue · GPU");
       setLocalReady(true);
       notify(
         "IA locale prête. Le premier résultat peut demander quelques instants.",
       );
     } catch (e: any) {
-      notify("Chargement du modèle local impossible : " + e.message, true);
+      if (e.name !== "AbortError")
+        notify("Chargement du modèle local impossible : " + e.message, true);
     } finally {
       setLocalLoading(false);
       setProgress("");
@@ -951,7 +961,7 @@ export default function App() {
     try {
       if (p.provider === "browser") {
         setModelList([
-          { id: DEFAULT_PREFS.models.browser, name: "SmolVLM · 256M · local" },
+          { id: DEFAULT_PREFS.models.browser, name: "Qwen 3.5 · 0.8B · local" },
         ]);
         return;
       }
@@ -2150,25 +2160,58 @@ export default function App() {
                             <div>
                               <strong>Une petite IA. Chez vous.</strong>
                               <small>
-                                SmolVLM 256M · gratuit · sans clé API
+                                {localReady && localRuntime ? localRuntime : p.models.browser.includes("Qwen")
+                                  ? "Qwen 3.5 · multilingue"
+                                  : "SmolVLM · modèle léger"}{" "}
+                                · gratuit · sans clé API
                               </small>
                             </div>
                             <span className="pill">LOCAL</span>
                           </div>
                           <p>
                             Le modèle est téléchargé depuis Hugging Face, puis
-                            vos photos sont analysées sur cet appareil. Il est
-                            surtout entraîné en anglais : les répliques en
-                            français et leur finesse peuvent être limitées.
+                            vos photos et vos mots sont analysés sur cet
+                            appareil. Le calcul est séparé de l’interface pour
+                            garder le studio réactif. Choisissez le modèle léger
+                            si la mémoire ou la connexion est limitée. Sur CPU,
+                            le studio utilise automatiquement SmolVLM, surtout
+                            avec des réponses en anglais. Pour le français,
+                            utilisez Qwen sur GPU ou votre fournisseur personnel.
                           </p>
+                          <Field label="Modèle local">
+                            <select
+                              value={p.models.browser}
+                              disabled={localLoading}
+                              onChange={(e) => {
+                                setP({
+                                  models: {
+                                    ...p.models,
+                                    browser: e.target.value,
+                                  },
+                                });
+                                setLocalReady(false);
+                              }}
+                            >
+                              <option value="onnx-community/Qwen3.5-0.8B-ONNX">
+                                Qwen 3.5 · 0.8B · multilingue · conseillé
+                              </option>
+                              <option value="HuggingFaceTB/SmolVLM-256M-Instruct">
+                                SmolVLM · 256M · plus léger · réponses en anglais
+                              </option>
+                            </select>
+                          </Field>
                           <Field label="Accélération">
                             <select
                               value={p.device}
+                              disabled={localLoading}
                               onChange={(e) => {
                                 setP({ device: e.target.value as any });
                                 setLocalReady(false);
                               }}
                             >
+                              <option value="auto">
+                                Automatique · GPU si compatible
+                              </option>
                               <option value="wasm">
                                 CPU · compatibilité maximale
                               </option>
@@ -2198,9 +2241,22 @@ export default function App() {
                                 ? "Modèle prêt"
                                 : "Activer l’IA gratuite"}
                           </button>
+                          {localLoading && (
+                            <button
+                              className="text-button"
+                              onClick={() =>
+                                import("./local-ai").then((m) =>
+                                  m.disposeLocalAI(),
+                                )
+                              }
+                            >
+                              Annuler le chargement
+                            </button>
+                          )}
                           <small>
-                            Premier téléchargement : quelques centaines de Mo.
-                            Aucun téléchargement avant ce clic.
+                            Premier téléchargement : environ 900 Mo pour Qwen,
+                            quelques centaines de Mo pour le modèle léger. Aucun
+                            téléchargement avant ce clic.
                           </small>
                           {localLoading && (
                             <div role="status" className="download-progress">

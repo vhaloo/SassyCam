@@ -18,9 +18,12 @@ if (process.env.SASSYCAM_SMOKE === "1")
     process.env.SASSYCAM_SMOKE_PROFILE ||
       path.join(__dirname, "..", ".qa", "electron-profile-current"),
   );
-if (!app.requestSingleInstanceLock()) app.quit();
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+  process.exit(0);
+}
 app.on("second-instance", () => {
-  if (window) {
+  if (window && !window.isDestroyed()) {
     if (window.isMinimized()) window.restore();
     window.focus();
   }
@@ -117,7 +120,7 @@ app
       await window.loadURL(service.url);
       if (process.env.SASSYCAM_SMOKE === "1") {
         const { runSmoke } = await import("./smoke.mjs");
-        await runSmoke(window, app);
+        await runSmoke(window, app, () => service.close());
       }
     }
     await create();
