@@ -1,94 +1,95 @@
-# 📸 SassyCam v0.1.2
+# SassyCam 1.0
 
-**The AI Webcam that roasts you—or adores you.**
+**Votre webcam, avec de la personnalité.** Un studio qui vous adore, vous taquine et transforme vos photos en portraits. Windows, macOS, Linux et ChatGPT Sites partagent la même interface.
 
-> **GitHub Description:** A sentient desktop companion that turns your webcam into a judgmental critic or an obsessive admirer. Powered by the **latest Gemini 3.1 Flash (Nano Banana 2)** for enhanced capabilities and performance, alongside GPT-5 and Claude. Features multimodal image-to-image caricatures, interactive art timeline, dynamic audio-reactive UI, and persistent localized subtitles.
+Version majeure candidate, issue de la 0.1.2. La liste des vérifications réellement exécutées figure dans [le rapport de tests](docs/TEST_REPORT.md). Les fonctions qui dépendent d’un compte, d’un modèle ou d’un appareil ne sont pas présentées comme validées par un simple build.
 
-[![GitHub license](https://img.shields.io/github/license/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/blob/master/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/vhaloo/SassyCam)](https://github.com/vhaloo/SassyCam/stargazers)
-[![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/vhaloo/SassyCam)
+## Le studio
 
----
+- Caméra HD avec choix du périphérique, miroir, grille de cadrage et retardateur ; import JPEG/PNG/WebP.
+- Curseur continu **−100 worship → 0 neutre → +100 roast**, avec préréglages.
+- Répliques saisies au clavier ou dictées ; réponses vocales et commandes comme « Prends une photo », « Plus doux », « Portrait » et « Stop ».
+- Séance automatique réglable, qui s’arrête quand le studio passe en arrière-plan.
+- Portraits IA avec votre photo comme référence, et illustration locale gratuite clairement identifiée comme un effet photo sans IA générative.
+- Galerie persistante, historique, aperçu plein format, export des originaux, cartes avec réplique et sauvegarde/restauration JSON.
+- Thèmes clair/sombre, interface adaptée au mobile, raccourcis clavier et six langues de réponse.
 
-## 🖼️ Screenshots
+La caméra et le micro sont ouverts à votre demande. Le studio envoie une photo au fournisseur choisi lors d’une action de génération ; il ne diffuse pas un flux webcam continu.
 
-| Devotion Mode (-100) | Nuclear Roast (+100) |
-| :---: | :---: |
-| ![Devotion Mode](assets/screenshots/devotion_fixed.png) | ![Roast Mode](assets/screenshots/roast_fixed.png) |
+## Votre IA, votre compte
 
----
+| Usage | Gratuit sur votre appareil | Avec votre propre compte |
+|---|---|---|
+| Conversation et vision | Qwen 3.5 local, option légère SmolVLM ; Ollama configurable sur bureau | ChatGPT personnel sur bureau, OpenAI API, Gemini, Claude, API compatible, Pollinations |
+| Portraits | Illustration photo locale ; ComfyUI avec un modèle installé | OpenAI Images, Gemini Images, API images compatible sur bureau |
+| Voix | Whisper local, voix du système ; Kokoro facultatif | Reconnaissance native du navigateur, selon sa disponibilité |
 
-## ✨ New in v0.1.2 (The Interactive Gallery Update)
+**Aucune clé ni aucun abonnement du créateur ne finance vos requêtes.** Les fournisseurs en ligne utilisent votre clé. Sur bureau, les clés peuvent être conservées dans le trousseau chiffré du système, avec séparation des profils. Sur le Site, elles restent en mémoire dans l’onglet et passent uniquement dans la requête vers le fournisseur choisi.
 
-### 🎨 Interactive Caricature Gallery
-- **Timeline Browsing**: Single-click any thumbnail in the bottom history bar to immediately show it in the large central view.
-- **External View**: Double-click any caricature to open the high-resolution original in your system's default image viewer.
-- **Adaptive Viewport**: The main display automatically resizes and scales your artwork to perfectly fit your window.
-- **History Persistence**: SassyCam now remembers you. Your previous drawings are automatically loaded into the timeline every time you launch.
+### Connexion ChatGPT : une distinction nécessaire
 
-### 🔊 Enhanced Subtitles
-- **Frame-Locked Alignment**: Subtitles are now pinned to the bottom of the caricature frame, ensuring they stay with the art even during window resizing.
-- **Mood Styling**: Text fonts and colors now transition based on the AI's mood—elegant cursive for **Devotion**, aggressive Impact for **Roast**.
+La connexion au **Site** identifie le visiteur ; elle n’accorde pas l’accès à son quota IA. L’intégration de quota d’une application hébergée demande une autorisation distincte d’OpenAI et n’est pas activée dans cette livraison.
 
----
+Sur **bureau**, le parcours OAuth open source est implémenté pour les comptes éligibles : permission personnelle, PKCE, validation du jeton, renouvellement, choix des modèles du compte et Responses API en streaming. Il reste à vérifier avec une connexion personnelle réelle. Cette route accepte la vision mais exclut actuellement la génération d’images et l’audio ; ces moteurs restent indépendants.
 
-## 🚀 Installation Options
+Voir [la matrice de parité](docs/FEATURE_PARITY.md), [les prérequis pour le quota hébergé](docs/HOSTED_CHATGPT_PLAN.md) et [les limites officielles](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations).
 
-### 🟢 Windows (One-Click Installer - Recommended)
-1.  **Download:** Download [Install_SassyCam.bat](https://github.com/vhaloo/SassyCam/blob/master/Install_SassyCam.bat).
-2.  **Run:** Double-click it. It will automatically clone the repo, set up a virtual environment, install dependencies, and launch.
+## Démarrer sur bureau
 
-### 🔵 Standalone Binary (Windows Only)
-1.  **Download:** Grab the [latest SassyCam_v0.1.2_Windows.zip](https://github.com/vhaloo/SassyCam/releases/latest).
-2.  **Extract & Run:** Unzip and double-click `SassyCam.exe`. No Python or Git required!
+Les paquets autonomes sont produits par le workflow [verify and package](.github/workflows/build.yml) : installateur et portable Windows, DMG/ZIP macOS, AppImage/DEB Linux, en x64 et ARM64. Les paquets de revue ne sont pas signés/notariés ; les protections habituelles du système s’appliquent. Un build macOS/Linux ne remplace pas un essai sur un appareil physique.
 
-### 🟠 macOS / Linux (Source)
-1. Open your terminal and paste:
-```bash
-git clone https://github.com/vhaloo/SassyCam.git && cd SassyCam && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python main.py
+Depuis les sources, avec Node.js **22.13+** (Node 24 recommandé) :
+
+```sh
+git clone https://github.com/vhaloo/SassyCam.git
+cd SassyCam
+npm ci
+npm run build
+npm run desktop
 ```
 
----
+Sur une branche de revue, récupérez cette branche avant `npm ci`. Les scripts `install_windows.bat` et `install_mac_linux.sh` exécutent les mêmes étapes. Aucun Python, Torch, FFmpeg ou modèle IA n’est chargé au démarrage du studio moderne.
 
-## 📋 Prerequisites (For neophytes)
-You need two free tools installed on your computer to run the source version:
--   **Python 3.10+**: [Download here](https://www.python.org/downloads/) (Crucial: Check "Add Python to PATH" during installation).
--   **Git**: [Download here](https://git-scm.com/downloads).
+L’option gratuite par défaut est **Qwen 3.5 0.8B**, sur bureau comme sur le Site : **Activer l’IA gratuite** télécharge environ 900 Mo de modèles et de runtime. Le calcul se fait dans un worker, avec accélération GPU si elle est compatible. Sur CPU, le studio choisit automatiquement SmolVLM, plus léger et limité à des réponses en anglais. Ces petits modèles ont une qualité variable ; ils ne remplacent pas un grand modèle cloud. Pour une IA locale plus puissante, utilisez une version actuelle d’[Ollama](https://ollama.com/download) et un modèle de vision adapté à votre appareil.
 
----
+## Version web et hébergement ChatGPT
 
-## 🛠️ Configuration
+Le même studio est adapté au runtime Sites (Vinext/Cloudflare). L’identité vient des en-têtes Sites vérifiés côté serveur ; les appels en ligne exigent une identité et une origine autorisées. Le code source ne contient aucune clé partagée. Les URL de fournisseurs personnalisés et les intégrations de machine locale sont réservées au bureau.
 
-### 1. API Keys
-SassyCam requires a **Gemini API Key** for its vision and image generation features.
-- Get a free key at **[Google AI Studio](https://aistudio.google.com/)**.
-- Paste it into the **Settings** menu within the app.
+Pour synchroniser un checkout Sites déjà préparé et enregistré :
 
-### 2. Sass-O-Meter Guide
-- **-100 to -67:** **DEVOTION.** Poetic odes to your soul.
-- **-66 to -34:** **FANBOY.** Enthusiastic hype-man.
-- **-33 to -1:** **SWEET.** Mild support.
-- **0 to 100:** **SASSY to NUCLEAR.** Standard to absolute verbal destruction.
+```sh
+node scripts/sync-site.mjs /chemin/absolu/du/checkout-sites
+```
 
----
+La commande conserve `.openai/hosting.json`, les identifiants du Site et les intégrations du starter. Elle ne publie pas le Site. Utilisez ensuite le workflow Sites de vérification, sauvegarde et déploiement. Les créations sont privées par défaut.
 
-## ❓ Troubleshooting (Common Issues)
+La galerie est conservée par compte **dans chaque navigateur**, sans synchronisation cloud. Exportez-la avant d’effacer les données du navigateur. La caméra requiert HTTPS et les permissions du navigateur ; ouvrez le Site dans un onglet autonome si un conteneur intégré bloque ces permissions.
 
--   **"WinError 1114" (DLL Load Failed)**: This usually means a conflict with your graphics drivers or Python version. Ensure you are using Python 3.10-3.14 and have updated your Windows updates.
--   **Black Screen / No Camera**: Go to **Settings** and try a different **Camera Index** (0, 1, or 2).
--   **No Sound**: Ensure your output device is correct in **Settings**. The first time you use a new voice, it may take 10-20 seconds to download the voice file.
--   **No Caricature**: Ensure your **Gemini API Key** is correctly entered in Settings.
+## Préserver vos données 0.1.2
 
----
+L’application d’origine et son historique sont conservés. `config.json`, les anciens profils du trousseau, les images de `~/nanobanana-output` et les modèles restent à leur emplacement d’origine. Le nouveau studio crée ses propres données ; les imports sont explicites.
 
-## 🤝 How to Contribute
+```sh
+# Dans un environnement Python séparé :
+python -m pip install -r requirements-legacy.txt
+python main.py --legacy
+```
 
-We love community improvements! 
-1.  **Report Bugs**: Open an [Issue](https://github.com/vhaloo/SassyCam/issues).
-2.  **Suggest Features**: Want a new mode? Tell us in the issues!
-3.  **Code**: Fork the repo, commit changes, and open a **Pull Request**.
+Whisper Python, Kokoro et ROS 2 restent disponibles comme modules facultatifs : [configuration locale](docs/LOCAL_AI.md).
 
----
+## Développer et vérifier
 
-**Built with 🔥 by [Vhaloo](https://github.com/vhaloo)**
+```sh
+npm run dev       # UI 127.0.0.1:4173 + API locale :4174
+npm run check
+npm test
+npm run build
+npm run dist      # paquets pour le système courant
+```
+
+Les tests couvrent les contrats fournisseurs, l’isolation des comptes, les origines, les limites d’entrée, le coffre chiffré, OAuth et les flux interrompus. Le scénario Electron utilise une caméra et des images synthétiques ; il peut vérifier une vraie inférence du modèle local sans capturer une personne.
+
+Le serveur local reste lié à `127.0.0.1` et conserve son port entre redémarrages pour préserver l’origine de la galerie. Une adresse personnalisée distante doit utiliser HTTPS. Aucun endpoint ChatGPT non documenté, cookie de session extrait ou jeton Codex n’est utilisé.
+
+[MIT](LICENSE) · [Historique 0.x](docs/CHANGELOG-0.x.md) · [Plan de réalisation](docs/IMPLEMENTATION_PLAN.md)

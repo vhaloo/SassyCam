@@ -1,13 +1,5 @@
-PyQt6
-opencv-python
-numpy
-Pillow
-google-generativeai
-openai
-anthropic
-requests
-sounddevice
-soundfile
-scipy
-kokoro-onnx
-openai-whisper
+# Optional native voice adapters. SassyCam 1.0 itself uses Node/Electron.
+# The preserved Qt interface uses requirements-legacy.txt.
+faster-whisper>=1.2,<2
+kokoro-onnx>=0.4,<1
+soundfile>=0.13,<1

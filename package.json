@@ -1,0 +1,109 @@
+{
+  "name": "sassycam",
+  "version": "1.0.0",
+  "description": "Your webcam, with a personality. A private, local-first creative studio.",
+  "author": {
+    "url": "https://github.com/vhaloo",
+    "name": "Valentin Wittwe (Vhaloo)",
+    "email": "valentinwww@gmail.com"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "desktop/main.cjs",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:ui": "vite --config studio/vite.config.ts",
+    "build": "vite build --config studio/vite.config.ts",
+    "start": "node server/local.mjs",
+    "desktop": "electron .",
+    "check": "tsc --noEmit",
+    "test": "node --test tests-modern/*.test.mjs",
+    "dist": "npm run build && electron-builder --publish never",
+    "dist:dir": "npm run build && electron-builder --dir --publish never",
+    "site:sync": "node scripts/sync-site.mjs"
+  },
+  "dependencies": {
+    "jose": "6.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.13",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.1.2",
+    "electron": "45.0.0",
+    "electron-builder": "26.15.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "@huggingface/transformers": "4.3.1",
+    "idb": "8.0.3",
+    "lucide-react": "1.61.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "build": {
+    "appId": "com.vhaloo.sassycam",
+    "productName": "SassyCam",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "desktop/**",
+      "server/**",
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "extraResources": [
+      {
+        "from": "scripts/optional_audio.py",
+        "to": "optional_audio.py"
+      }
+    ],
+    "asarUnpack": [
+      "server/**"
+    ],
+    "artifactName": "SassyCam-${version}-${os}-${arch}.${ext}",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "artifactName": "SassyCam-${version}-Windows-${arch}-Setup.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.entertainment",
+      "extendInfo": {
+        "NSCameraUsageDescription": "SassyCam uses your camera to frame photos. Images leave your device only when you request a cloud response.",
+        "NSMicrophoneUsageDescription": "SassyCam uses your microphone for optional voice commands and replies."
+      },
+      "hardenedRuntime": true,
+      "entitlements": "desktop/entitlements.mac.plist"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "AudioVideo"
+    },
+    "icon": "studio/public/app-icon.png",
+    "portable": {
+      "artifactName": "SassyCam-${version}-Windows-${arch}-Portable.${ext}"
+    }
+  }
+}

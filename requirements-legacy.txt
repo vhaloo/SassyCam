@@ -1,0 +1,14 @@
+PyQt6
+opencv-python
+numpy
+Pillow
+google-generativeai
+openai
+anthropic
+requests
+sounddevice
+soundfile
+scipy
+kokoro-onnx
+openai-whisper
+keyring

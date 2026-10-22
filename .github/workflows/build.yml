@@ -1,36 +1,65 @@
-name: Build SassyCam Windows
-
+name: SassyCam 1.0 - verify and package
 on:
   push:
-    branches: [ "main" ]
-    tags: [ "v*" ]
+    branches: [master]
+    tags: ['v*']
   pull_request:
-    branches: [ "main" ]
-
+    branches: [master]
+    paths-ignore: ['docs/**', 'README.md', 'CHANGELOG.md', 'SECURITY.md']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sassycam-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  build:
-    runs-on: windows-latest
-
+  verify:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10' 
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pyinstaller
-
-    - name: Build with PyInstaller (Custom Script)
-      run: |
-        python build_v2.py
-
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: SassyCam-Windows-Build
-        path: dist/SassyCam/
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+  package:
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: '--win --x64 --arm64'
+            name: Windows
+          - os: macos-latest
+            target: '--mac --x64 --arm64'
+            name: macOS
+          - os: ubuntu-latest
+            target: '--linux --x64 --arm64'
+            name: Linux
+    runs-on: ${{ matrix.os }}
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npx electron-builder ${{ matrix.target }} --publish never
+      - uses: actions/upload-artifact@v7
+        with:
+          name: SassyCam-1.0-${{ matrix.name }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.zip
+            release/*.AppImage
+            release/*.deb
+          if-no-files-found: error
+          retention-days: 14
