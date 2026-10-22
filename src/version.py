@@ -1,3 +1,3 @@
-__version__ = "0.1.2"
-__release_date__ = "2026-02-27"
+__version__ = "1.0.0"
+__release_date__ = "2026-10-21"
 __author__ = "Vhaloo"

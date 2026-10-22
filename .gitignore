@@ -59,3 +59,14 @@ colcon_test_nodes/
 
 SassyCam_Windows_v*.zip
 key.key
+node_modules/
+release/
+.qa/
+.env
+.env.*
+!.env.example
+.sassycam/
+.sites-runtime/
+.venv/
+.venv-audio/
+*.tsbuildinfo

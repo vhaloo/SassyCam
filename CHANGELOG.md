@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0 candidate] - 2026-10-21
+
+- Rebuilt the main studio as a shared React application with an isolated Electron desktop shell and a ChatGPT Sites deployment.
+- Added local free vision inference, independent text/image providers, personal ChatGPT desktop OAuth, account-specific model discovery and encrypted per-profile credentials.
+- Preserved camera, continuous worship/roast intensity, voice commands, typed replies, automatic sessions, portrait generation, persistent gallery, original exports and optional Kokoro/Whisper/ROS 2 integrations.
+- Added framing guides, countdown, photo import, neutral mode, share cards, validated transactional gallery restore, responsive layouts and light/dark themes.
+- Kept cloud identity separate from personal-plan inference. Hosted subscription usage and unsupported image/audio modalities are disclosed explicitly; no creator-owned API key is used.
+- Replaced startup-time Torch/Whisper imports and destructive installers. Retained the Python version and original data for recovery.
+- Added provider/authentication/security contracts and cross-platform x64/ARM64 packaging. See docs/TEST_REPORT.md for measured verification and remaining external gates.
+
 ## [0.1.2] - 2026-02-27
 
 ### Added
