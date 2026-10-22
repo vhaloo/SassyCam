@@ -13,7 +13,7 @@ Indicative total: 2 h 15 min–4 h 25 min. Estimates are not measured effort or 
 - [x] Package Windows, macOS and Linux; retain optional legacy integrations (15–25 min).
 - [x] Integrate Sites authentication and deploy owner-private review version (15–30 min).
 - [x] Run provider, auth, storage, lifecycle, build and UI checks (20–40 min).
-- [ ] Deliver source PR, binaries, parity matrix and honest verification report (10–20 min).
+- [x] Deliver source PR, binaries, parity matrix and honest verification report (10–20 min).
 
 ## Confirmed platform constraints
 
@@ -25,4 +25,3 @@ Sources checked on 2026-10-21:
 - https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference
 - https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations
 - https://learn.chatgpt.com/docs/sites?surface=app
-

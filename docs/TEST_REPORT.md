@@ -13,10 +13,13 @@ Date: 2026-10-21 (America/Toronto). Candidate release; this report distinguishes
 - Private production Site deployed at https://sassycam-studio.vhaloo.chatgpt.site. Real owner sign-in and owner name display verified through the browser. The final hosted worker loaded Qwen, completed text-only and imported synthetic-image inference, and created a labelled non-generative illustration in its gallery. This demonstrates execution, not measured visual accuracy. Service-access checks returned page/status 200, no invented visitor identity or plan capability, and 401 on an anonymous cloud mutation. A service access header does not become a user.
 - Windows x64 installer and portable packaging, with application icon and distinct filenames. Final artifact hashes and packaged-app verification are recorded in delivery evidence when complete.
 
-## Final delivery checks
+## Final delivery checks (completed)
 
-- Source checkpoint `0850221` passed all CI jobs for Windows/macOS/Linux, x64/ARM64, including the worker implementation. The shutdown repair is rebuilt from its own source commit; earlier packages are retained as checkpoints.
-- The final packaged Windows application and production worker implementation are verified separately from source tests. Their exact results and hashes are recorded in the final delivery manifest.
+- Source `ee304e23f9ebbb675eca7960e3a024eee78f7780` passed all jobs in [CI run 39711874783](https://github.com/vhaloo/SassyCam/actions/runs/39711874783): 28 tests, type checking, production build, and Windows/macOS/Linux packages for x64/ARM64.
+- The final Windows x64 packaged application passed all 18 UI/model/voice checks. The CPU fallback passed 17 checks, including actual English image/text replies and cancellation. Both use synthetic media.
+- Closing the final AI session left zero application processes. Native teardown needed the eight-second exit guard on this machine; the test process consequently returned exit code 1 after its 18 successful checks. This is a bounded native-shutdown workaround, not evidence that the underlying Chromium/ONNX stall disappeared.
+- The owner-private hosted deployment succeeded from Site source `501f57b9d0f7902295b7becfbca66844d2702517`, deployment `appgdep_6ad972e65ac08191871ce487f0cd0525`. Production browser and anonymous-isolation checks passed on that deployment.
+- Exact artifact locations, source archive, SHA-256 hashes and machine-readable UI reports are retained in the local release delivery manifest. Packages are unsigned; physical cross-platform operation and signing/notarization are not established by CI.
 
 ## Not established by these tests
 
