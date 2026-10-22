@@ -380,7 +380,9 @@ export default function App() {
         return;
       }
       if (
-        ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName) ||
+        ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(
+          target.tagName,
+        ) ||
         target.isContentEditable
       )
         return;
@@ -397,16 +399,51 @@ export default function App() {
     return () => document.removeEventListener("keydown", shortcut);
   });
 
-  useEffect(()=>{
-    if(!lightbox&&!confirmDelete)return;
-    const dialog=document.querySelector<HTMLElement>('[role="dialog"]');
-    const previous=document.activeElement as HTMLElement|null;
-    const oldOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
-    const focusable=()=>Array.from(dialog?.querySelectorAll<HTMLElement>('button,a[href],input,select,textarea,[tabindex="0"]')||[]).filter(el=>!el.hasAttribute('disabled'));
+  useEffect(() => {
+    if (!lightbox && !confirmDelete) return;
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+    const previous = document.activeElement as HTMLElement | null;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusable = () =>
+      Array.from(
+        dialog?.querySelectorAll<HTMLElement>(
+          'button,a[href],input,select,textarea,[tabindex="0"]',
+        ) || [],
+      ).filter((el) => !el.hasAttribute("disabled"));
     focusable()[0]?.focus();
-    const trap=(event:KeyboardEvent)=>{if(event.key!=='Tab')return;const items=focusable();if(!items.length){event.preventDefault();return;}const first=items[0],last=items[items.length-1];if(event.shiftKey&&(document.activeElement===first||!dialog?.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!dialog?.contains(document.activeElement))){event.preventDefault();first.focus();}};
-    document.addEventListener('keydown',trap);return()=>{document.removeEventListener('keydown',trap);document.body.style.overflow=oldOverflow;if(previous?.isConnected)previous.focus();};
-  },[!!lightbox,!!confirmDelete]);
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      if (!items.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = items[0],
+        last = items[items.length - 1];
+      if (
+        event.shiftKey &&
+        (document.activeElement === first ||
+          !dialog?.contains(document.activeElement))
+      ) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        (document.activeElement === last ||
+          !dialog?.contains(document.activeElement))
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => {
+      document.removeEventListener("keydown", trap);
+      document.body.style.overflow = oldOverflow;
+      if (previous?.isConnected) previous.focus();
+    };
+  }, [!!lightbox, !!confirmDelete]);
 
   async function persist(entry: Entry): Promise<boolean> {
     if (current.current.scope !== entry.scope) return false;
@@ -459,7 +496,7 @@ export default function App() {
       const entry = makeEntry("capture", { image });
       const saved = await persist(entry);
       setSelected(entry);
-      if(saved) notify("Photo conservée sur cet appareil.");
+      if (saved) notify("Photo conservée sur cet appareil.");
     } catch (e: any) {
       notify(e.message, true);
     }
@@ -474,9 +511,10 @@ export default function App() {
       const entry = makeEntry("capture", { image });
       const saved = await persist(entry);
       setSelected(entry);
-      if(saved) notify(
-        "Photo importée. Elle reste sur cet appareil jusqu’à une demande en ligne.",
-      );
+      if (saved)
+        notify(
+          "Photo importée. Elle reste sur cet appareil jusqu’à une demande en ligne.",
+        );
     } catch (e: any) {
       notify(e.message, true);
     }
@@ -684,14 +722,15 @@ export default function App() {
       text: words,
       sourceId: selected?.id,
     });
-    const saved=await persist(entry);
+    const saved = await persist(entry);
     if (current.current.scope === scope) {
       setSelected(entry);
-      if(saved) notify(
-        result.generated
-          ? "Portrait IA créé et conservé sur cet appareil."
-          : "Illustration locale créée · traitement photo sans IA générative.",
-      );
+      if (saved)
+        notify(
+          result.generated
+            ? "Portrait IA créé et conservé sur cet appareil."
+            : "Illustration locale créée · traitement photo sans IA générative.",
+        );
     }
   }
   async function createPortrait() {
@@ -3132,8 +3171,11 @@ export default function App() {
               if (file.size > 80_000_000)
                 throw new Error("Archive trop volumineuse.");
               const n = await importEntries(await file.text(), scope);
-              const restored=await getEntries(scope);
-              if(current.current.scope===scope){setEntries(restored);notify(`${n} éléments restaurés.`);}
+              const restored = await getEntries(scope);
+              if (current.current.scope === scope) {
+                setEntries(restored);
+                notify(`${n} éléments restaurés.`);
+              }
             } catch (err: any) {
               notify(err.message, true);
             }

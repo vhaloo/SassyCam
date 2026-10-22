@@ -1,12 +1,10 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import http from "node:http";
 import { fileURLToPath } from "node:url";
-const output = process.env.SASSYCAM_QA_DIR || path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-  ".qa",
-);
+const output =
+  process.env.SASSYCAM_QA_DIR ||
+  path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".qa");
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
 export async function runSmoke(win, app) {
   await mkdir(output, { recursive: true });
@@ -247,6 +245,35 @@ export async function runSmoke(win, app) {
         local,
       );
       report.localInference = local;
+    }
+    if (process.env.SASSYCAM_VOICE_SMOKE === "1") {
+      const appRoot = path.resolve(
+        path.dirname(fileURLToPath(import.meta.url)),
+        "..",
+      );
+      const chunk = (await readdir(path.join(appRoot, "dist", "assets"))).find(
+        (name) => /^local-ai-.+\.js$/.test(name),
+      );
+      const wav = (
+        await readFile(
+          process.env.SASSYCAM_VOICE_FILE ||
+            path.join(output, "voice-fixture.wav"),
+        )
+      ).toString("base64");
+      const transcript = await evaluate(
+        `(async()=>{const bytes=Uint8Array.from(atob(${JSON.stringify(wav)}),c=>c.charCodeAt(0));const context=new AudioContext();const decoded=await context.decodeAudioData(bytes.buffer);await context.close();const offline=new OfflineAudioContext(1,Math.ceil(decoded.duration*16000),16000);const source=offline.createBufferSource();source.buffer=decoded;source.connect(offline.destination);source.start();const samples=(await offline.startRendering()).getChannelData(0);const {transcribeLocal}=await import('/assets/'+${JSON.stringify(chunk)});return transcribeLocal(samples,'en',()=>{});})()`,
+      );
+      check(
+        "real local Whisper transcribes generated speech",
+        typeof transcript === "string" &&
+          transcript.toLowerCase().includes("photo"),
+        { transcript },
+      );
+      report.voiceInference = {
+        text: transcript,
+        input: "Windows system TTS fixture: Take a photo.",
+        physicalMicrophone: false,
+      };
     }
     report.passed = true;
   } catch (e) {

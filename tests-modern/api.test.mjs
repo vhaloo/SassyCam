@@ -145,23 +145,59 @@ test("desktop binds loopback, rejects forged hosts and keeps profiles separate",
 });
 
 test("desktop origin and host identity survive a complete service restart", async () => {
-  const dir=await mkdtemp(path.join(os.tmpdir(),'sassycam-restart-'));
-  let service=await startLocal({dataDir:dir});
+  const dir = await mkdtemp(path.join(os.tmpdir(), "sassycam-restart-"));
+  let service = await startLocal({ dataDir: dir });
   try {
-    const firstURL=service.url;const first=await (await fetch(firstURL+'/api/status')).json();
-    await service.close();service=await startLocal({dataDir:dir});
-    const second=await (await fetch(service.url+'/api/status')).json();
-    assert.equal(service.url,firstURL);assert.equal(second.user.id,first.user.id);
-  } finally {await service.close();assert.ok(dir.startsWith(path.join(os.tmpdir(),'sassycam-restart-')));await rm(dir,{recursive:true,force:true});}
+    const firstURL = service.url;
+    const first = await (await fetch(firstURL + "/api/status")).json();
+    await service.close();
+    service = await startLocal({ dataDir: dir });
+    const second = await (await fetch(service.url + "/api/status")).json();
+    assert.equal(service.url, firstURL);
+    assert.equal(second.user.id, first.user.id);
+  } finally {
+    await service.close();
+    assert.ok(dir.startsWith(path.join(os.tmpdir(), "sassycam-restart-")));
+    await rm(dir, { recursive: true, force: true });
+  }
 });
 
 test("native image opening writes only validated image data inside the configured pictures folder", async () => {
-  const dir=await mkdtemp(path.join(os.tmpdir(),'sassycam-pictures-'));const opened=[];
-  const service=await startLocal({dataDir:path.join(dir,'host'),picturesDir:path.join(dir,'pictures'),openNative:async p=>opened.push(p)});
-  const post=body=>fetch(service.url+'/api/open-image',{method:'POST',headers:{origin:service.url,'x-sassycam-request':'1','content-type':'application/json'},body:JSON.stringify(body)});
+  const dir = await mkdtemp(path.join(os.tmpdir(), "sassycam-pictures-"));
+  const opened = [];
+  const service = await startLocal({
+    dataDir: path.join(dir, "host"),
+    picturesDir: path.join(dir, "pictures"),
+    openNative: async (p) => opened.push(p),
+  });
+  const post = (body) =>
+    fetch(service.url + "/api/open-image", {
+      method: "POST",
+      headers: {
+        origin: service.url,
+        "x-sassycam-request": "1",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
   try {
-    assert.equal((await post({image:'file:///etc/passwd'})).status,400);assert.equal(opened.length,0);
-    assert.equal((await post({image:'data:image/png;base64,AA==',path:'../../private.exe'})).status,200);
-    assert.equal(opened.length,1);assert.ok(opened[0].startsWith(path.join(dir,'pictures')+path.sep));assert.match(opened[0],/\.png$/);
-  } finally {await service.close();assert.ok(dir.startsWith(path.join(os.tmpdir(),'sassycam-pictures-')));await rm(dir,{recursive:true,force:true});}
+    assert.equal((await post({ image: "file:///etc/passwd" })).status, 400);
+    assert.equal(opened.length, 0);
+    assert.equal(
+      (
+        await post({
+          image: "data:image/png;base64,AA==",
+          path: "../../private.exe",
+        })
+      ).status,
+      200,
+    );
+    assert.equal(opened.length, 1);
+    assert.ok(opened[0].startsWith(path.join(dir, "pictures") + path.sep));
+    assert.match(opened[0], /\.png$/);
+  } finally {
+    await service.close();
+    assert.ok(dir.startsWith(path.join(os.tmpdir(), "sassycam-pictures-")));
+    await rm(dir, { recursive: true, force: true });
+  }
 });

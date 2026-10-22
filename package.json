@@ -2,7 +2,11 @@
   "name": "sassycam",
   "version": "1.0.0",
   "description": "Your webcam, with a personality. A private, local-first creative studio.",
-  "author": "Valentin Wittwe (Vhaloo)",
+  "author": {
+    "url": "https://github.com/vhaloo",
+    "name": "Valentin Wittwe (Vhaloo)",
+    "email": "valentinwww@gmail.com"
+  },
   "license": "MIT",
   "type": "module",
   "main": "desktop/main.cjs",
