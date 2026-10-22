@@ -8,6 +8,22 @@ const {
 } = require("electron");
 const path = require("node:path");
 let service, window;
+let quitGuard;
+function armQuitGuard() {
+  if (quitGuard) return;
+  // Native ONNX/media teardown can stall Chromium after its last window closes.
+  // Normal exits disconnect IPC immediately; the guard acts only after 8 s.
+  quitGuard = require("node:child_process").spawn(
+    process.execPath,
+    [path.join(__dirname, "quit-guard.cjs"), String(process.pid)],
+    { env: { ...process.env, ELECTRON_RUN_AS_NODE: "1" },
+      windowsHide: true, detached: true,
+      stdio: ["ignore", "ignore", "ignore", "ipc"] },
+  );
+  quitGuard.on("error", () => {});
+  quitGuard.unref();
+  quitGuard.channel?.unref();
+}
 if (process.env.SASSYCAM_SMOKE === "1") {
   app.commandLine.appendSwitch("use-fake-device-for-media-stream");
   app.commandLine.appendSwitch("use-fake-ui-for-media-stream");
@@ -107,6 +123,9 @@ app
           webSecurity: true,
         },
       });
+      window.on("close", () => {
+        if (process.platform !== "darwin") armQuitGuard();
+      });
       window.webContents.setWindowOpenHandler(({ url }) => {
         if (/^https:\/\//.test(url)) shell.openExternal(url);
         return { action: "deny" };
@@ -136,5 +155,6 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 app.on("before-quit", () => {
+  armQuitGuard();
   service?.close();
 });

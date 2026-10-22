@@ -332,24 +332,12 @@ export async function runSmoke(win, app, closeService) {
       JSON.stringify(report, null, 2),
     );
     console.log(JSON.stringify(report, null, 2));
-    // A failed browser/native session can leave executeJavaScript unresolved.
-    // Test teardown must remain bounded even after that renderer failure.
+    // Close the renderer before quitting so its camera/ONNX workers cannot keep
+    // a hidden test session alive. Cleanup never executes code in a dying page.
     setTimeout(() => process.exit(report.passed ? 0 : 1), 5000);
-    try {
-      const appRoot = path.resolve(
-        path.dirname(fileURLToPath(import.meta.url)),
-        "..",
-      );
-      const chunk = (await readdir(path.join(appRoot, "dist", "assets"))).find(
-        (name) => /^local-ai-.+\.js$/.test(name),
-      );
-      if (chunk)
-        await evaluate(
-          `import('/assets/'+${JSON.stringify(chunk)}).then(m=>m.disposeLocalAI())`,
-        );
-    } catch {}
-    setTimeout(() => process.exit(report.passed ? 0 : 1), 1000);
+    win.close();
     await closeService?.();
-    app.exit(report.passed ? 0 : 1);
+    process.exitCode = report.passed ? 0 : 1;
+    app.quit();
   }
 }

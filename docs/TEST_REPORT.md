@@ -5,17 +5,17 @@ Date: 2026-10-21 (America/Toronto). Candidate release; this report distinguishes
 ## Passed locally
 
 - TypeScript checking and production Vite desktop build on Windows 11 / Node 25.8.
-- 27 Node contract/security tests: provider payloads, photo forwarding, personal credentials only, quota errors, account-specific models, completed/truncated SSE, OAuth state/nonce/PKCE/JWT validation, atomic encrypted vault, concurrent refresh, loopback/Host/Origin checks, profile separation, stable origin after a full service restart, and bounded native image opening.
+- 28 Node contract/security tests: provider payloads, photo forwarding, personal credentials only, quota errors, account-specific models, completed/truncated SSE, OAuth state/nonce/PKCE/JWT validation, atomic encrypted vault, concurrent refresh, loopback/Host/Origin checks, profile separation, stable origin after a full service restart, bounded native image opening, and parent-scoped shutdown protection.
 - Electron/Chromium UI scenario with **synthetic camera and synthetic pictures**: live preview, snapshot, import, local illustration, gallery, persistence after page reload, typed reply through a local mock provider with photo forwarding, worship -100, framing grid, and mobile navigation without horizontal overflow at a 374px content viewport.
 - Real Qwen 3.5 0.8B WebGPU image inference through the studio, plus a text-only request with `vision:false`. French output was observed, with variable quality. The complete source scenario passes 18 checks, including cancellation, responsive controls while inference is running, and real Whisper tiny transcription of a synthetic system-TTS fixture (“Take a photo.”). No physical microphone recording was used.
 - CPU/WASM model activation, image inference, text-only inference and cancellation: 17 checks passed using the automatic SmolVLM fallback. Initial French output from that small model was unusable; its final configuration explicitly uses English and the UI discloses that limitation.
 - Sites/Vinext production builds and local preview. Simulated Sites sign-in resolves the test visitor `local_seedy`; this is local-preview evidence only.
-- Private production Site deployed at https://sassycam-studio.vhaloo.chatgpt.site. Real owner sign-in and owner name display verified through the browser. Service-access checks returned page/status 200, no invented visitor identity or plan capability, and 401 on an anonymous cloud mutation. A service access header does not become a user.
+- Private production Site deployed at https://sassycam-studio.vhaloo.chatgpt.site. Real owner sign-in and owner name display verified through the browser. The final hosted worker loaded Qwen, completed text-only and imported synthetic-image inference, and created a labelled non-generative illustration in its gallery. This demonstrates execution, not measured visual accuracy. Service-access checks returned page/status 200, no invented visitor identity or plan capability, and 401 on an anonymous cloud mutation. A service access header does not become a user.
 - Windows x64 installer and portable packaging, with application icon and distinct filenames. Final artifact hashes and packaged-app verification are recorded in delivery evidence when complete.
 
 ## Final delivery checks
 
-- The earlier source checkpoint `8aaccf8` passed all CI jobs for Windows/macOS/Linux, x64/ARM64. The final worker implementation is being rebuilt from its own source commit; the earlier packages are retained only as checkpoints.
+- Source checkpoint `0850221` passed all CI jobs for Windows/macOS/Linux, x64/ARM64, including the worker implementation. The shutdown repair is rebuilt from its own source commit; earlier packages are retained as checkpoints.
 - The final packaged Windows application and production worker implementation are verified separately from source tests. Their exact results and hashes are recorded in the final delivery manifest.
 
 ## Not established by these tests
@@ -33,6 +33,8 @@ The installed Ollama 0.22.0 did not produce usable output from the tried Qwen mo
 The first hosted attempt exceeded Sites' 25 MiB per-file asset limit because Vite emitted an unused 26.9 MB ONNX fallback. The hosted build now verifies the library's version-pinned runtime/CDN contract and excludes only that redundant generated asset. Browser inference still runs on the visitor's device. The runtime and model downloads require network access on first use and are cached thereafter.
 
 Production verification caught Vinext rewriting `import.meta.url` to a build-time file URL. The shared client now uses Vite's explicit worker import so the hosted URL stays relative to the production origin. CPU testing caught an unavailable Qwen `GatherBlockQuantized` kernel; CPU uses the smaller supported model instead of failing after download.
+
+Native Chromium/ONNX teardown left hidden test processes after all UI checks had passed. Desktop shutdown now arms an isolated eight-second guard. Its IPC connection closes as soon as the original parent exits, avoiding PID reuse; it can terminate only that parent and its Windows child tree. Ordinary shutdown remains graceful, and macOS window closing keeps the standard app lifecycle.
 
 Early integration runs exposed a blocked blob script/data URL, a changed Transformers.js processor argument order, and a missing reused reference photo. These were repaired and the complete browser inference scenario was rerun successfully. Partial or stale results are not used as proof of a new inference.
 
